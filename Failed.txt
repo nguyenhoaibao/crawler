@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Adriatica A1162.5114Q - Đồng hồ / Nam | Lazada.vn</title>
+<meta charset="utf-8"/>
+<meta content="True" name="HandheldFriendly"/>
+<meta content="320" name="MobileOptimized"/>
+<meta content="width=device-width, user-scalable=0, maximum-scale=1.0, minimum-scale=1.0, initial-scale=1.0" name="viewport"/>
+<meta content="đơn giản và tinh tế, adriatica a1162.5114q là chiếc đồng hồ hoàn hảo dành riêng sự thanh lịch. bằng cách thiết kế theo trường phái tối giản tạo cảm quan th" name="description"/>
+<meta content="Adriatica A1162.5114Q - Đồng hồ / Nam, Đồng hồ &amp; Phụ kiện, Đồng hồ business" name="keywords"/>
+<meta content="index,follow" name="robots"/>
+<meta content="yes" name="apple-mobile-web-app-capable"/>
+<meta content="LAZADA" name="apple-mobile-web-app-title"/>
+<link href="http://www.lazada.vn/adriatica-a11625114q-dong-ho-nam-91740.html?setDevice=mobile" hreflang="vi_vn" rel="alternate"/>
+<link href="http://www.lazada.vn/adriatica-a11625114q-dong-ho-nam-91740.html" rel="canonical"/>
+<link href="http://static-02.lazada.vn/images/local_mobile_api/favicon/apple-touch-icon-144x144.png" rel="apple-touch-icon-precomposed" sizes="144x144"/>
+<link href="http://static-03.lazada.vn/images/local_mobile_api/favicon/apple-touch-icon-114x114.png" rel="apple-touch-icon-precomposed" sizes="114x114"/>
+<link href="http://static-01.lazada.vn/images/local_mobile_api/favicon/apple-touch-icon-72x72.png" rel="apple-touch-icon-precomposed" sizes="72x72"/>
+<link href="http://static-02.lazada.vn/images/local_mobile_api/favicon/apple-touch-icon-57x57.png" rel="apple-touch-icon-precomposed"/>
+<link href="http://static-02.lazada.vn/images/local_mobile_api/favicon/apple-touch-icon-57x57.png" rel="shortcut icon"/>
+<link href="/images/spinbasket/icons/favicon.ico" rel="icon" type="image/x-icon"/>
+<link href="/images/spinbasket/icons/favicon.ico" rel="shortcut icon" type="image/x-icon"/>
+<meta content="yes" name="apple-mobile-web-app-capable"/>
+<meta content="black" name="apple-mobile-web-app-status-bar-style"/>
+<!-- <script>(function(a,b,c){if(c in b&&b[c]){var d,e=a.location,f=/^(a|html)$/i;a.addEventListener("click",function(a){d=a.target;while(!f.test(d.nodeName))d=d.parentNode;"href"in d&&(d.href.indexOf("http")||~d.href.indexOf(e.host))&&(a.preventDefault(),e.href=d.href)},!1)}})(document,window.navigator,"standalone")</script>  -->
+<link href="/images/core_mobile/l/splash.png" rel="apple-touch-startup-image"/>
+<!--[if IEMobile]>  <meta http-equiv="cleartype" content="on" />  <![endif]-->
+<link href="http://static-02.lazada.vn/css/live/alice-min-2014-mobile.1407465731.css" media="all" rel="stylesheet" type="text/css"/>
+<!-- required script for rendering put here -->
+<script>
+if(!route) {
+var route = 'catalog/detail';
+}
+</script>
+<script src="http://static-02.lazada.vn/scripts/core_mobile/libs/modernizr-custom.js"></script>
+<!-- Google Analytics begin - Template: genericpage -->
+<script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-30172376-1']);
+    _gaq.push(['_setDomainName', 'lazada.vn']);
+
+    // check & validate hashtag if any
+    var hashValue = window.location.hash ? window.location.hash.substr(1) : false;
+    var regex = /^Q([^C]*)C(.*)$/;
+    var GAStartTime = new Date().getTime();
+    
+    
+    if (hashValue && regex.test(hashValue)) {
+        var matches = hashValue.match(regex);
+
+        _gaq.push(['_set', 'campaignParams',
+            'utm_source=direct&utm_campaign=' + matches[1] + '&utm_medium=Lazada_Affiliate_Program']);
+
+    }
+
+    
+    _gaq.push(['_setCustomVar', 6, 'user-language', 'vi', 2]);
+    _gaq.push(['_setCustomVar', 3, 'AB Testing Theme', '2014', 2]);
+
+        var currentTheme = 'mobile';
+    if (currentTheme != '') {
+        _gaq.push(['_setCustomVar', 2, 'Theme', currentTheme, 2]);
+    }
+
+    _gaq.push(['_set', 'hitCallback', function(){
+        var sessionCounter = getCookie('session_counter');
+        var utmaValue = getCookie('__utma');
+        if (utmaValue !== null) {
+            var gaSessionCounter = parseInt(utmaValue.split('.').pop());
+            if (gaSessionCounter != '' && sessionCounter != gaSessionCounter) {
+                $.ajax({
+                    url: '/tracking/sessioncounter/',
+                    type: 'post',
+                    dataType: 'json',
+                    data: {
+                        csrfTokenName: 'YII_CSRF_TOKEN',
+                        csrfToken: '3d5585fc83d3029ef72473d73d0e1ef20f725fb6'
+                    }
+                });
+            }
+            setCookie('session_counter', gaSessionCounter, 1);   
+        }
+    }]);
+
+            _gaq.push(['_trackPageview']);
+    
+    (function () {
+        var ga = document.createElement('script');
+        ga.type = 'text/javascript';
+        ga.async = true;
+                ga.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'stats.g.doubleclick.net/dc.js';
+                var s = document.getElementsByTagName('script')[0];
+        s.parentNode.insertBefore(ga, s);
+    })();
+    
+    function getCookie(cname) {
+        var name = cname + "=";
+        var ca = document.cookie.split(';');
+        for(var i=0; i<ca.length; i++) {
+            var c = ca[i];
+            while (c.charAt(0)==' ') c = c.substring(1);
+            if (c.indexOf(name) != -1) return c.substring(name.length,c.length);
+        }
+        return "";
+    };
+    
+    function setCookie(cname, cvalue, exhours) {
+        var d = new Date();
+        d.setTime(d.getTime() + (exhours*60*60*1000));
+        var expires = "expires="+d.toGMTString();
+        document.cookie = cname + "=" + cvalue + "; " + expires +"; path=/";
+    };
+</script>
+<!-- Google Analytics end -->
+<!-- Net Slave begin - Template: defaultpage -->
+<script type="text/javascript">
+
+    var gl_cpid =5;
+    (function () {
+        var qct = document.createElement('script');
+        qct.type = 'text/javascript';
+        qct.async = true;
+        qct.src = 'http://static-02.lazada.vn/js/getpid.js?async=1&cpid=5&v=2';
+                (document.getElementsByTagName('head')[0] || document.body).appendChild(qct);
+    })();
+</script>
+<!-- Net Slave end -->
+<!-- Universal GA begin - Template: generic -->
+<script type="text/javascript">
+    (function (i, s, o, g, r, a, m) {
+        i['GoogleAnalyticsObject'] = r;
+        i[r] = i[r] || function () {
+            (i[r].q = i[r].q || []).push(arguments)
+        }
+
+            , i[r].l = 1 * new Date();
+        a = s.createElement(o),
+            m = s.getElementsByTagName(o)[0];
+        a.async = 1;
+        a.src = g;
+        m.parentNode.insertBefore(a, m)
+    })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'gaTracker');
+
+    gaTracker('create', 'UA-30172376-7',
+        'lazada.vn'
+    );
+    gaTracker('send', 'pageview');
+
+</script>
+<!-- Universal GA end -->
+<!-- HasOffers begin - Template: genericpage -->
+<script type="text/javascript"></script>
+<!-- HasOffers end -->
+<!-- BobDropoutTracker begin - Template: genericpage -->
+<!-- BobDropoutTracker end -->
+<!-- WebEngage begin -->
+<script type="text/javascript">
+    var _weq = _weq || {};
+    _weq['webengage.ruleData'] = {"cartValue":0,"inventoryCount":"1"};
+    _weq['webengage.customData'] = {"cartValue":0,"inventoryCount":"1"};
+</script>
+</head>
+<body class="mobile os_linux thm-core_mobile thm-spinbasket_mobile thm-local_mobile thm-local_mobile_api thm-ventures/vn/local_mobile_api static-design l-flipped l-hasSidebar l-detailscreen catalog">
+<script type="text/javascript">
+    var webtrekkProjectConfig = {
+        trackId: "409851756870964",
+        trackDomain: "lazadavn01.webtrekk-asia.net",
+        domain: "",
+        cookieDomain: "www.lazada.vn"
+    };
+</script>
+<script src="http://static-02.lazada.vn/scripts/core/webtrekk/webtrekk_v3_2.js" type="text/javascript"></script>
+<script type="text/javascript">
+    /*<![CDATA[*/
+    if (window.webtrekkV3) {
+        var wt = new webtrekkV3();
+        var myCookie = new wt.cookieManager("subscription", 365);
+        wt.productStatus="view";
+wt.product="AD458FAABYSCVNAMZ";
+wt.productCost="2589000,00";
+wt.productCategory={1:"/dong-ho-nam-gioi/?child",2:"donghomoi",3:"donghonamgioi",4:"ADRIATICA"};
+wt.customEcommerceParameter={2:"Bạc",9:"sale"};
+wt.contentId="shop.mobile.product.adriatica-a11625114q-dong-ho-nam-91740.html";
+wt.contentGroup={1:"shop",2:"mobile",3:"/dong-ho-nam-gioi/?child",4:"/dong-ho-business-nam-gioi/",10:"product"};
+wt.customSessionParameter={1:"0",6:"myCookie.get(&#039;subID&#039;)"};
+wt.mediaCode="wt_af;wt_co;wt_dp;wt_em;wt_m_dp;wt_m_re;wt_m_sb;wt_m_sn;wt_nl;wt_pc;wt_rf;wt_re;wt_sb1;wt_sb2;wt_sb3;wt_sn1;wt_sn2;wt_sn3;wt_s1;wt_s2;wt_s3;wt_s4;wt_s5;wt_s6;wt_s7;wt_s8;wt_sm;wt_db;wt_sa";
+
+        // check & validate hashtag if any
+        var hashValue = window.location.hash ? window.location.hash.substr(1) : false;
+        var regex = /^Q([^C]*)C(.*)$/;
+        var paramSeparator = '.';
+                    
+        if (hashValue && regex.test(hashValue)) {
+            var matches = hashValue.match(regex);
+            var creativeId = matches[1];
+
+            if (typeof wt === "object") {
+                wtData = [
+                    'wt_af=',
+                    'vn',
+                    paramSeparator,
+                    'Lazada_Affiliate_Program',
+                    paramSeparator,
+                    'direct',
+                    paramSeparator,
+                    creativeId,
+                    paramSeparator,
+                    paramSeparator
+                ];
+                wt.campaignId = wtData.join('');
+                var isNetSlave = true;
+            }
+        }
+        
+        if (isNetSlave == undefined && 0 && 0) {
+            if (typeof wt === "object") {
+                wtData = [
+                    'wt_af=',
+                    'vn',
+                    paramSeparator,
+                    'Lazada_Affiliate_Program',
+                    paramSeparator,
+                    'direct',
+                    paramSeparator,
+                    '',
+                    paramSeparator,
+                    '',
+                    paramSeparator
+                ];
+                wt.campaignId = wtData.join('');
+            }
+        }
+
+        wt.sendinfo();
+    }
+    /*]]>*/
+</script>
+<noscript>
+<div>
+<img alt="" height="1" src="http://lazadavn01.webtrekk-asia.net/409851756870964/wt.pl?p=315,shop.mobile.product.adriatica-a11625114q-dong-ho-nam-91740.html,0,0,0,0,0,0,0,0&amp;cg1=shop&amp;cg2=mobile&amp;cg3=/dong-ho-nam-gioi/?child&amp;cg4=/dong-ho-business-nam-gioi/&amp;cg10=product&amp;cd=&amp;cp1=&amp;cs1=0&amp;cs2=&amp;cs3=&amp;cc1=&amp;cc2=&amp;cc3=&amp;cc4=&amp;cc5=&amp;cc6&amp;ca1=/dong-ho-nam-gioi/?child&amp;ca2=donghomoi&amp;ca3=donghonamgioi&amp;ca4=ADRIATICA&amp;st=view&amp;ba=AD458FAABYSCVNAMZ&amp;co=2589000,00&amp;cb1=&amp;cb2=Bạc&amp;cb6=&amp;cb9=sale&amp;cb12=" width="1"/>
+</div>
+</noscript>
+<!-- Google Tag Manager -->
+<noscript>
+<iframe height="0" src="//www.googletagmanager.com/ns.html?id=GTM-BXDL" style="display:none;visibility:hidden" width="0"></iframe>
+</noscript>
+<script>
+    
+    var dataLayer = [{"pagetype":"productpage","u1":8971,"u2":8971,"u3":"ADRIATICA","u4":"AD458FAABYSCVNAMZ","u5":"Adriatica A1162.5114Q - \u0110\u1ed3ng h\u1ed3 \/ Nam","u7":"new","u14":0,"u15":"3450000.00","u20":"VN","pdt_sku":"AD458FAABYSCVNAMZ","pdt_simplesku":"AD458FAABYSCVNAMZ-97426","pdt_name":"Adriatica A1162.5114Q - \u0110\u1ed3ng h\u1ed3 \/ Nam","pdt_price":"2589000.00","pdt_amount":"3450000.00","pdt_discount":"-25%","pdt_category":"\"\\u0110\\u1ed3ng h\\u1ed3 nam\",\"\\u0110\\u1ed3ng h\\u1ed3 business\"","pdt_description":"","pdt_brand":"ADRIATICA","pdt_currency":"VND","pdt_url":"http:\/\/www.lazada.vn\/adriatica-a11625114q-dong-ho-nam-91740.html","pdt_photo":"http:\/\/static-03.lazada.vn\/p\/adriatica-6268-04719-2-product.jpg","customer_email":"no_email","source":"direct","has_brand":1,"has_category":1,"has_subcategory":1,"has_sub_subcategory":0,"brand":"ADRIATICA","category":"\u0110\u1ed3ng h\u1ed3 nam","subcategory":"\u0110\u1ed3ng h\u1ed3 business","sub_subcategory":"","device":"m","core":{"country":"VN","language":"vi","layoutType":"mobile","currencyCode":"VND","isPro":true,"version":"1.0"},"page":{"name":"adriatica-a11625114q-dong-ho-nam-91740","type":"detail","id":"","experiment":"AB Testing Theme","variation":2014,"is404":false,"errorType":"","errorMessage":"","categories":[{"categoryName":"\u0110\u1ed3ng h\u1ed3 & Ph\u1ee5 ki\u1ec7n","categoryId":"8955"},{"categoryName":"\u0110\u1ed3ng h\u1ed3 nam","categoryId":"8969"},{"categoryName":"\u0110\u1ed3ng h\u1ed3 business","categoryId":"8971"}],"product":{"id":"91740","sku":"AD458FAABYSCVNAMZ-97426","name":"Adriatica A1162.5114Q - \u0110\u1ed3ng h\u1ed3 \/ Nam","brand":"ADRIATICA","type":"\u0110\u1ed3ng h\u1ed3 business","reviewCount":0,"avgRating":0,"inStock":true,"price":"2589000.00","discountPercentage":"25%","deliveryTime":"2-3","fulfillmentSource":"Lazada.vn"}},"visitor":{"customerID":0,"subscriberID":0,"type":"new","loggedIn":false,"email":"","lastPurchaseDate":"","transactionCount":0},"ecommerce":{"customer_first_purchase":""},"pageTestVariation":""}];
+    try {
+        (function (w, d, s, l, i) {
+            function go() {
+                w[l] = w[l] || [];
+                w[l].push({'gtm.start': new Date().getTime(), event: 'gtm.js'});
+                var f = d.getElementsByTagName(s)[0], j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : '';
+                j.async = true;
+                j.src = '//www.googletagmanager.com/gtm.js?id=' + i + dl;
+                f.parentNode.insertBefore(j, f);
+            }
+
+            if (w.addEventListener) {
+                w.addEventListener("load", go, false);
+            } else if(w.attachEvent)
+            {
+                w.attachEvent("onload", go);
+            }
+        })(window, document, 'script', 'dataLayer', 'GTM-BXDL');
+    } catch (e) {
+        console.log("GTM_ERROR");
+        console.log(e);
+    }
+</script>
+<!-- End Google Tag Manager --><div class="container">
+<div class="left-container">
+<header>
+<a href="/" id="lazada-logo">
+<img alt="Lazada" height="40" src="http://static-01.lazada.vn/images/local_mobile_api/logo/vn@3x.png" width="127"/>
+</a>
+</header>
+<div class="shopping-cart-info">
+<a class="trolley" href="/cart"><span class="itemNumber" id="itemCount">0</span></a>
+<span class="title">Giỏ hàng</span>
+<span class="price">0 VND</span>
+<span class="tax">Đã bao gồm VAT</span>
+</div>
+<ul class="category-list menu-list">
+<li class="homepage-icon"><a href="/">Trang chủ</a></li>
+<li class="category-icon"><a href="/urlall-products/">Tất cả danh mục</a></li>
+<!-- li class="brand-icon"><a href="">Brands</a></li-->
+<li class="sign-in-icon"><a href="/customer/account/login">Đăng nhập</a></li>
+</ul>
+</div>
+<div class="main-container">
+<header>
+<a data-slideopen="false" href="" id="open-menu">Open Menu</a>
+<a href="/cart" id="open-cart"><span class="itemNumber" id="itemCount">0</span></a>
+<a href="/" id="lazada-logo">
+<img alt="Lazada" height="40" src="http://static-01.lazada.vn/images/local_mobile_api/logo/vn@3x.png" width="127"/>
+</a>
+</header>
+<!-- ####################### -->
+<div class="mobile-search">
+<form action="http://www.lazada.vn/catalog/" class="form-mobile" method="get">
+<div class="input-bar">
+<input autocomplete="off" class="sel-search-input" id="searchInput" name="q" placeholder="Tìm kiếm theo sản phẩm, danh mục hay nhãn hàng mong muốn" title="Từ khóa tìm kiếm" type="search" value=""/>
+<input id="baseUrl" type="hidden" value="http://www.lazada.vn"/>
+<ul class="search-suggestion">
+<!-- li><a href="">iPhone 3Gs 8GB White</a></li-->
+</ul>
+</div>
+<div class="search-icon-wrapper"><button class="search-icon sel-search-button" name="search-button" type="submit"></button></div>
+</form>
+</div>
+<div class="content" id="content">
+<div class="bcr box mbm fsm breadcrumbs">
+<ul>
+<li class="prs">
+<a href="/dong-ho-moi/" title="Đồng hồ &amp; Phụ kiện">Đồng hồ &amp; Phụ kiện</a>
+<span class="cta-arrow"></span>
+</li>
+<li class="prs">
+<a href="/dong-ho-nam-gioi/?child" title="Đồng hồ nam">Đồng hồ nam</a>
+<span class="cta-arrow"></span>
+</li>
+<li class="prs">
+<a href="/dong-ho-business-nam-gioi/" title="Đồng hồ business">Đồng hồ business</a>
+<span class="cta-arrow"></span>
+</li>
+<li class="prs">
+<span>
+                    Adriatica A1162.5114Q - Đồng hồ / Nam                </span>
+</li>
+</ul>
+</div>
+<div data-active-root="dong-ho-moi" data-active-segment="" id="active-segments-roots" style="display:none"></div>
+<div class="content-wrapper">
+<link href="/catalog/detaildescription/?sku=AD458FAABYSCVNAMZ" rel="prerender"/>
+<input id="configSku" name="configSku" type="hidden" value="AD458FAABYSCVNAMZ"/>
+<input id="selectedSku" name="selectedSku" type="hidden" value="AD458FAABYSCVNAMZ-97426"/>
+<a href="/catalog/gallery/?sku=AD458FAABYSCVNAMZ">
+<!-- non visible div elements to cache the catalog image sizes for flexible rendering -->
+<div class="hidden" id="catImageWidth">340</div>
+<div class="hidden" id="catImageHeight">340</div>
+<div class="thumb-large catWrapper">
+<img alt="Adriatica A1162.5114Q - Đồng hồ / Nam" data-placeholder="placeholder.jpg" height="280" src="http://static-03.lazada.vn/p/adriatica-6268-04719-1-product.jpg" width="280"/>
+</div>
+</a>
+<div class="description catWrapper">
+<span class="product-name catTitle">Adriatica A1162.5114Q - Đồng hồ / Nam</span>
+<div class="description-detail">
+<span class="product-price">2.589.000 VND</span>
+<span class="product-price-normal">
+<span class="product-price-prefix">Giá trước đây</span>
+<span class="product-actual-price">3.450.000 VND</span>
+<span class="product-discount-prefix">, you save <span class="product-discount-percentage"></span></span>
+</span>
+<span class="product-stock in" style="display:none;">Còn hàng</span>
+<span class="product-stock out" style="display:none;">Hết hàng</span>
+<span class="product-delivery-info">  2-3 ngày làm việc</span>
+</div>
+</div>
+<div class="catWrapper description" style="z-index: 100000">
+<div class="description-detail">
+<div class="product-seller">
+<div class="product-seller">
+<div class="marketplace_msg show-supplier"><div class="shipment-type-info" data-sku="AD458FAABYSCVNAMZ-97426" id="shipment_type_AD458FAABYSCVNAMZ-97426">Được bán &amp; giao hàng bởi Lazada</div></div>
+</div>
+</div>
+</div>
+<form action="/cart/add/" class="form-mobile" id="form-cart">
+<input name="return" type="hidden" value="json"/>
+<input class="p" name="p" type="hidden" value="AD458FAABYSCVNAMZ"/>
+<input class="sku" name="sku" type="hidden" value="AD458FAABYSCVNAMZ-97426"/>
+<div class="summary-total hidden">
+<div class="quantity">
+                    Số lượng:
+                    <select class="sel-cart-quantity-AD458FAABYSCVNAMZ" id="qty_AD458FAABYSCVNAMZ" name="quantity" title="Số lượng">
+<option value="1">1</option>
+<option value="2">2</option>
+<option value="3">3</option>
+<option value="4">4</option>
+<option value="5">5</option>
+</select>
+</div>
+<div class="total">
+<span>Total:</span>
+<span class="price">2.589.000 VND</span>
+</div>
+</div>
+<meta content="unavailable_after: 10-Aug-2014 16:22:40 GMT" name="robots"/> <div class="cta-btn">
+<button class="orange-button" id="addtocart" type="submit">Mua ngay</button>
+<a class="wishlist-btn"></a>
+<a class="share-btn"></a>
+</div>
+</form>
+</div>
+<div class="write-review-button">
+<a class="gray-button" href="/catalog/review/?sku=AD458FAABYSCVNAMZ&amp;form">Hãy là người đâu tiên đánh giá sản phẩm này</a>
+</div>
+<div class="catWrapper whatisinbox">
+<div class="catTitle">Bộ sản phẩm bao gồm</div>
+<div class="description-detail">
+<ul class="ui-listBulleted"><li class=""><span>1 sản phẩm</span></li></ul> </div>
+</div>
+<div class="catWrapper specifications specifications-detail">
+<span class="cta-arrow"></span>
+<a href="/catalog/detaildescription/?sku=AD458FAABYSCVNAMZ">
+<div class="catTitle">Thông tin sản phẩm</div>
+<div class="description-detail">
+<ul class="prd-attributesList ui-listBulleted"><li class=""><span>AD458FAABYSAVNAMZ-97424</span></li><li class=""><span>Áp dụng từ ngày 22/7/2014 đến hết ngày 31/7/2014 hoặc đến khi hết quà tặng</span></li><li class=""><span>Đường kính mặt 35 mm</span></li><li class=""><span>Thép không gỉ</span></li><li class=""><span>Thương hiệu Thụy Sỹ</span></li></ul> </div>
+</a>
+</div>
+</div>
+</div>
+<footer>
+<div class="footer-usp">
+<a class="usp-cash" href="" tooltip="cod_tooltip">
+<span class="usp-icon"></span>
+<span class="usp-text">Thanh toán khi nhận hàng</span>
+</a>
+<a class="usp-delivery" href="" tooltip="freeship_tooltip">
+<span class="usp-icon"></span>
+<span class="usp-text">Giao hàng miễn phí (*)</span>
+</a>
+<a class="usp-return" href="" tooltip="warranty_tooltip">
+<span class="usp-icon"></span>
+<span class="usp-text">Miễn phí thử và trả hàng</span>
+</a>
+</div>
+<div class="tip middle" id="cod_tooltip" style="display: none;">
+<div class="tt-title"><b>Bạn e ngại về việc thanh toán qua thẻ?</b></div>
+<div class="tt-desc">Hãy chọn giải pháp trả tiền mặt cho nhân viên giao hàng của Lazada khi nhận được hàng.</div>
+</div>
+<div class="tip middle" id="freeship_tooltip" style="display: none;">
+<div class="tt-title"><b>Giao hàng toàn quốc <sup>(*)</sup></b></div>
+<div class="tt-desc">Lazada giao hàng miễn phí toàn quốc cho đơn hàng <b>trên 250.000 VND </b>. Chi phí này không bao gồm Phí hàng cồng kềnh áp dụng cho một số sản phẩm tại Lazada.vn quy định tại Mục 3.<br/>
+Xem thêm chi tiết tại <a href="http://www.lazada.vn/shipping">http://www.lazada.vn/shipping</a></div>
+</div>
+<div class="tip middle" id="warranty_tooltip" style="display: none;">
+<div class="tt-title"><b>Hoàn trả sản phẩm trong vòng 30 ngày</b></div>
+<div class="tt-desc">Thật vậy, bạn có thể hoàn trả hàng trong vòng 30 ngày kể từ khi mua sản phẩm (theo chính sách của chúng tôi). Truy cập <a href="http://www.lazada.vn/chinh-sach-doi-tra-hang">http://www.lazada.vn/chinh-sach-doi-tra-hang</a> để biết thêm chi tiết.</div>
+</div>
+<a href="/privacy-policy/">Chính sách bảo mật</a> |
+    <a href="/contact/">Contact Us</a>
+<address>Copyright 2012 - 2013, Lazada.vn</address>
+<a class="change-device" href="/catalog/link-cac-san-pham?setDevice=desktop">Chuyển sang sử dụng phiên bản cho desktop</a>
+</footer></div>
+</div>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script>!window.jQuery && document.write(unescape('%3Cscript src="http://static-02.lazada.vn/scripts/core/jQuery/jquery-1.9.1.min.js"%3E%3C/script%3E'))</script>
+<script src="http://static-02.lazada.vn/scripts/alice-2014-mobile-1407465831.js"></script><input name="YII_CSRF_TOKEN" type="hidden" value="3d5585fc83d3029ef72473d73d0e1ef20f725fb6"/>
+<script type="text/javascript">
+    // TODO: Find out that the reason to use mobile JS
+    //$.mobile.ajaxEnabled = false;
+    //$.mobile.ajaxLinksEnabled = false;
+    //$.mobile.pushStateEnabled = false;
+store.csrf = {"tokenName":"YII_CSRF_TOKEN"};store.captcha = {"isRequired":false,"publicKey":"6LdfvPESAAAAABU2MzVoknqEwNyxkee-KCsDCPhe","theme":"white","lang":"en","txt_show_captcha":"show captcha","custom_translations":{"instructions_visual":"Type the two words:","instructions_audio":"Transcribe there what you hear:","play_again":"Replay the audio track","cant_hear_this":"Download the track in MP3 format","visual_challenge":"visual mode","audio_challenge":"audio mode","refresh_btn":"Get two new words","help_btn":"H\u1ed7 tr\u1ee3","incorrect_try_again":"Incorrect. Retry."}};store.imageDataStore = {"catalog_width":"160","catalog_height":"160","gallery_width":"44","gallery_height":"44","product_width":"340","product_height":"340","zoom_width":"850","zoom_height":"850","cart_width":"75","cart_height":"75","use_vertical":false,"imageCountSprite":4,"placeholderPath":"http:\/\/static-02.lazada.vn\/images\/local_mobile_api\/placeholder\/"};store.quickview = {"requestUrl":"\/catalog\/quickview"};store.backInStockReminder = {"enabled":true};store.simpleSelection = {"productAvailableMessage":false,"predefinedParams":{"key":"adriatica-a11625114q-dong-ho-nam-91740.html"},"isAllSimpleOutOfStock":false,"hasChildrenProducts":false};store.login = {"isAjaxLogin":null};store.elasticLayout = {"enabled":false};store.newsletter = {"dftErrorMsg":"Email is invalid","genderErrorMsg":"Please select your gender"};store.flexsliderCreator = {"txtCurrentPage":"Page ###currPage### of ###pageCount###"};store.search = {"keywordMinLength":2};store.delivery_time = null;store.stockStore = {"AD458FAABYSCVNAMZ-97426":1};store.shipmentTypeStore = null;store.options = {"crossdocking":null,"shipment_type":[]};store.twitter = {"enabled":false,"language":"vi","debug":false,"data":{"productSku":"AD458FAABYSCVNAMZ"}};store.locationTree = {"emptyOptLabel":"L\u1ef1a ch\u1ecdn"};store.serverCurrentTimestamp = 1407687759;store.webCheckout = 0;store.convertAnchorLinks = {"baseTagUrl":"http:\/\/www.lazada.vn"};store.currentTheme = "mobile";store.hasGA = true;store.richRelevance = {"enabled":true,"apiKey":"5ca037fd95311d50","apiUrl":"\/\/media.richrelevance.com\/rrserver\/js\/1.0\/p13n.js","userSession":"c2a57da7e5aba98f4f1e5144cbe8c105","userId":"c2a57da7e5aba98f4f1e5144cbe8c105","currency":"VND","enableBanners":"1","context":"catalogDetail","data":{"productId":"AD458FAABYSCVNAMZ-97426","categoryId":"dong-ho-business-nam-gioi"}};store.newsletter_exit_intent_popup = true;store.venture = "VN";store.priceStore = {"AD458FAABYSCVNAMZ":{"currency":"VND","price_label_without_special":"Gi\u00e1","price_label_with_special":"Gi\u00e1 tr\u01b0\u1edbc \u0111\u00e2y","special_price_label":"Gi\u00e1 Lazada","saving_label":"Ti\u1ebft ki\u1ec7m","display_out_of_stock_despite_all_conditions":false,"prices":{"AD458FAABYSCVNAMZ-97426":{"price":"3.450.000 VND","special_price":"2.589.000 VND","saving_percentage":"25%"}}}};</script>
+<script type="text/javascript"> $(document).ready(function() { 
+$(document).off('touchmove')
+ });</script><script type="text/javascript">store["stockStore"] = {"AD458FAABYSCVNAMZ-97426":1};
+store["priceStore"]["AD458FAABYSCVNAMZ"] = {"currency":"VND","price_label_without_special":"Gi\u00e1","price_label_with_special":"Gi\u00e1 tr\u01b0\u1edbc \u0111\u00e2y","special_price_label":"Gi\u00e1 Lazada","saving_label":"Ti\u1ebft ki\u1ec7m","display_out_of_stock_despite_all_conditions":false,"prices":{"AD458FAABYSCVNAMZ-97426":{"price":"3.450.000 VND","special_price":"2.589.000 VND","saving_percentage":"25%"}}};
+store["delivery_time"]=store["delivery_time"]||{}; store["delivery_time"]["AD458FAABYSCVNAMZ"] = {"AD458FAABYSCVNAMZ-97426":{"min_delivery_time":"2","max_delivery_time":"3","delivery_time_text":"2-3 ng\u00e0y l\u00e0m vi\u1ec7c"}};</script>
+<div id="translateStore" style="visibility:hidden; display:none;">{"Go to cart":"<span style="color: red;">Ti\u1ebfn h\u00e0nh \u0111\u1eb7t h\u00e0ng \u00bb","Add to cart":"Mua ngay","Do you really want to remove this item from cart":"B\u1ea1n mu\u1ed1n b\u1ecf s\u1ea3n ph\u1ea9m n\u00e0y ra kh\u1ecfi gi\u1ecf h\u00e0ng ","Remove item":"X\u00f3a","1 Item was added to the shopping cart":"1 Item was added to the shopping cart","Continue shopping":"Ti\u1ebfp t\u1ee5c mua h\u00e0ng \u00bb","Your cart":"Gi\u1ecf h\u00e0ng c\u1ee7a b\u1ea1n","Delivered in":" ","%d-%d business days":"%d-%d ng\u00e0y l\u00e0m vi\u1ec7c","In stock":"C\u00f2n h\u00e0ng","Not in stock":"H\u1ebft h\u00e0ng","Required field":"Th\u00f4ng tin b\u1eaft bu\u1ed9c","Please enter a valid email address":"Vui l\u00f2ng nh\u1eadp \u0111\u00fang \u0111\u1ecbnh d\u1ea1ng email","Password must contain at least one alphanumeric":"M\u1eadt kh\u1ea9u ph\u1ea3i c\u00f3 \u00edt nh\u1ea5t 01 ch\u1eef s\u1ed1 (ho\u1eb7c k\u00ed t\u1ef1 ch\u1eef)","Passwords did not match":"M\u1eadt kh\u1ea9u kh\u00f4ng tr\u00f9ng kh\u1edbp","Invalid number":"S\u1ed1 kh\u00f4ng h\u1ee3p l\u1ec7","Loading...":"Vui l\u00f2ng ch\u1edd...","You have to choose one payment method":"B\u1ea1n ph\u1ea3i ch\u1ecdn 1 h\u00ecnh th\u1ee9c thanh to\u00e1n","Phone number must be between 8 and 20 digits":"S\u1ed1 \u0111i\u1ec7n tho\u1ea1i ph\u1ea3i t\u1eeb 8 \u0111\u1ebfn 20 ch\u1eef s\u1ed1","Phone number must be between 9 and 20 digits":"S\u1ed1 \u0111i\u1ec7n tho\u1ea1i ph\u1ea3i t\u1eeb 9 \u0111\u1ebfn 20 k\u00ed t\u1ef1","Phone number must be between 10 and 20 digits":"S\u1ed1 \u0111i\u1ec7n tho\u1ea1i ph\u1ea3i t\u1eeb 10 \u0111\u1ebfn 20 k\u00ed t\u1ef1","Cancel":"Hu\u1ef7","More products":"Hi\u1ec7n th\u00eam s\u1ea3n ph\u1ea9m","Select":"L\u1ef1a ch\u1ecdn"}</span></div></body>
+</html>
