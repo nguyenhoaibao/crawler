@@ -98,8 +98,8 @@ def parse_lazada_product_url(q, i):
 				print "Pass url %s" % url
 				
 				#logging parse url fail to file
-				with open('lazada-failed.txt', 'a') as f:
-					f.write(url + "\n")
+				#with open('lazada-failed.txt', 'a') as f:
+					#f.write(url + "\n")
 				pass
 	except Exception as e:
 		print "Parse error: ", str(e)
@@ -115,7 +115,7 @@ def crawl(**kwargs):
 	get_url_to_crawl(queue = q)
 
 	#start 5 threads
-	for i in range(1):
+	for i in range(10):
 		t = threading.Thread(target=parse_lazada_product_url, args=(q,i,))
 		t.start()
 		
