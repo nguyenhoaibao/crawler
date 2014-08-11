@@ -50,12 +50,8 @@ def get_url_to_crawl(**kwargs):
 	except Exception as e:
 		print "Cannot get url to crawl: %s" + str(e.args)
 
-def parse_lazada_product_url(q, i):
+def parse_lazada_product_url(q, i, mongo_collection, r):
 	try:
-		#get mongo connection
-		mongo_connect = db.factory.get_connection('mongo')
-		#select collection
-		mongo_collection = mongo_connect['lazada_product']
 		while q.get():
 			#get url from queue
 			url = q.get()
@@ -78,6 +74,9 @@ def parse_lazada_product_url(q, i):
 				
 				#parse product name
 				product_name = parsed_html.body.findAll('span', {'class' : 'product-name'})[0].text.strip()
+
+				#parse image
+				product_image = parsed_html.body.find('img', {"data-placeholder": "placeholder.jpg"})['src']
 			
 				#parse price
 				price = parsed_html.body.find('span', {'class' : 'product-price'}).text.strip()
@@ -87,24 +86,26 @@ def parse_lazada_product_url(q, i):
 				product_data = {
 					'product_id' : int(product_id),
 					'name'  : product_name,
+					'image' : product_image,
 					'price' : price,
 					'url'   : url
 				}
 			
 				#insert data to mongo
 				mongo_collection.insert(product_data)
-			except:
-				print "Parse html error"
+			except Exception as e:
+				print "Parse html error: %s" % str(e.args)
 				print "Pass url %s" % url
 				
 				#logging parse url fail to file
 				#with open('lazada-failed.txt', 'a') as f:
 					#f.write(url + "\n")
 				pass
+		else:
+			print "Crawl all urls"
 	except Exception as e:
 		print "Parse error: ", str(e)
 		
-
 
 def crawl(**kwargs):
 	#use SetQueue to avoice duplicate url in Queue
@@ -114,8 +115,16 @@ def crawl(**kwargs):
 	#urls is put in q
 	get_url_to_crawl(queue = q)
 
+	#get mongo connection
+	mongo_conn = db.factory.get_connection('mongo')
+	#select collection
+	mongo_collection = mongo_conn['lazada_product']
+
+	#get url from redis set
+	redis_conn = db.factory.get_connection('redis')
+
 	#start 5 threads
 	for i in range(10):
-		t = threading.Thread(target=parse_lazada_product_url, args=(q,i,))
+		t = threading.Thread(target=parse_lazada_product_url, args=(q,i, mongo_collection, redis_conn,))
 		t.start()
 		
