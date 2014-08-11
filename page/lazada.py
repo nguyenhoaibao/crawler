@@ -55,7 +55,7 @@ def get_url_to_crawl(**kwargs):
 			for url in urls_crawled:
 				urls_crawled_set.add(url['url'])
 
-			print "%s were crawled!!!" % len(lazada_urls) 
+			print "%s were crawled!!!" % len(urls_crawled_set) 
 
 			lazada_urls = list(lazada_urls - urls_crawled_set)
 
