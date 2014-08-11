@@ -52,40 +52,58 @@ def get_url_to_crawl(**kwargs):
 
 def parse_lazada_product_url(q, i):
 	try:
-		print "Worker %s" % i
-		#get url from queue
-		url = q.get()
-
-		product_id = re.search(r'(\d+)\.html$', url).group(1)
-
-		#parse html from url
-		html = request_url.get_html_from_url(url)
-		parsed_html = BeautifulSoup(html)
-
 		#get mongo connection
 		mongo_connect = db.factory.get_connection('mongo')
 		#select collection
 		mongo_collection = mongo_connect['lazada_product']
+		while q.get():
+			#get url from queue
+			url = q.get()
 
-		parsed_html = BeautifulSoup(html)
+			print "Worker %s parsing url %s" % (i, url)
+			
+			#get product id
+			product_id = re.search(r'(\d+)\.html$', url).group(1)
 
-		product_name = parsed_html.body.findAll('li', {'class' : 'prs'})[3].text.strip()
-		price = parsed_html.body.find('span', {'class' : 'product-price'}).text.strip()
-		#use regular expression to replace string
-		price = re.sub('\s+VND|\.', '', price)
-		
-
-		product_data = {
-			'product_id' : int(product_id),
-			'name'  : product_name,
-			'price' : price,
-			'url'   : url
-		}
-		#insert data to mongo
-		mongo_collection.insert(product_data)
-
+			#parse html from url
+			html = request_url.get_html_from_url(url)
+			
+			#print re.findall(r'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+', html)
+			#return
+			
+			print "Trying to parse html from url %s" % url
+			
+			try:
+				parsed_html = BeautifulSoup(html)
+				
+				#parse product name
+				product_name = parsed_html.body.findAll('span', {'class' : 'product-name'})[0].text.strip()
+			
+				#parse price
+				price = parsed_html.body.find('span', {'class' : 'product-price'}).text.strip()
+				#use regular expression to replace VND and dot symbol
+				price = re.sub('\s+VND|\.', '', price)
+			
+				product_data = {
+					'product_id' : int(product_id),
+					'name'  : product_name,
+					'price' : price,
+					'url'   : url
+				}
+			
+				#insert data to mongo
+				mongo_collection.insert(product_data)
+			except:
+				print "Parse html error"
+				print "Pass url %s" % url
+				
+				#logging parse url fail to file
+				with open('lazada-failed.txt', 'a') as f:
+					f.write(url + "\n")
+				pass
 	except Exception as e:
-		print str(e)
+		print "Parse error: ", str(e)
+		
 
 
 def crawl(**kwargs):
