@@ -4,7 +4,7 @@ import Queue
 import proxy_list
 
 PROXY_DICT = {}
-TIMEOUT = 12
+TIMEOUT = 24
 
 def get_proxy():
 	global PROXY_DICT
