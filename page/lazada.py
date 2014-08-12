@@ -1,4 +1,4 @@
-import threading, Queue, db.factory, request_url
+import threading, Queue, db.factory, request_url, stacktracer
 import re
 from urllib2 import Request, urlopen
 from set_queue import SetQueue
@@ -140,6 +140,7 @@ def crawl(**kwargs):
 	else:
 		get_url_to_crawl(queue = q)
 	
+	stacktracer.trace_start("trace.html")
 
 	#start 5 threads
 	for i in range(10):
