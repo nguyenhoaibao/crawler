@@ -69,8 +69,16 @@ def get_url_to_crawl(**kwargs):
 	except Exception as e:
 		print "Cannot get url to crawl: %s" + str(e.args)
 
-def parse_lazada_product_url(q, i, mongo_collection):
+def parse_lazada_product_url(**kwargs):
 	try:
+		i = kwargs['i']
+		q = kwargs['queue']
+		mongo_collection = kwargs['mongo_collection']
+		
+		useproxy = False
+		if 'useproxy' in kwargs and kwargs['useproxy']:
+			useproxy = True
+		
 		while q.get():
 			#get url from queue
 			url = q.get()
@@ -81,7 +89,7 @@ def parse_lazada_product_url(q, i, mongo_collection):
 			product_id = re.search(r'(\d+)\.html$', url).group(1)
 
 			#parse html from url
-			html = request_url.get_html_from_url(url)
+			html = request_url.get_html_from_url(url, useproxy)
 			
 			#print re.findall(r'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+', html)
 			#return
@@ -141,9 +149,13 @@ def crawl(**kwargs):
 		get_url_to_crawl(queue = q)
 	
 	stacktracer.trace_start("trace.html")
+	
+	kwargs['mongo_collection'] = mongo_collection
+	kwargs['queue'] = q
 
 	#start 5 threads
-	for i in range(10):
-		t = threading.Thread(target=parse_lazada_product_url, args=(q,i, mongo_collection,))
+	for i in range(1):
+		kwargs['i'] = i
+		t = threading.Thread(target=parse_lazada_product_url, kwargs=(kwargs))
 		t.start()
 		
