@@ -32,7 +32,7 @@ def request_to_url(url, useproxy):
 		return r.text
 
 
-def get_html_from_url(url, useproxy):
+def get_html_from_url(url, *useproxy):
 	html = ''
 	if url:
 		while not html:

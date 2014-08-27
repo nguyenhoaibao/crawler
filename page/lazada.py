@@ -1,161 +1,146 @@
-import threading, Queue, db.factory, request_url, stacktracer
+import threading, Queue, db.factory, request_url
 import re
-from urllib2 import Request, urlopen
 from set_queue import SetQueue
 from bs4 import BeautifulSoup
-from pymongo import MongoClient
 
-SITEMAP_URL = 'http://lazada.vn/sitemap-products.xml'
+INIT_URL = 'http://lazada.vn'
+SKIP_URL = '\#|about|privacy|cart|customer|urlall|mobile|javascript|shipping'
+#SKIP_URL = [
+#	'/',
+#	'#'
+#	'/about/',
+#	'/privacy-policy/',
+#	'/cart',
+#	'/customer/account/login',
+#	'/urlall-products/',
+#	'/cart?setDevice=desktop',
+#	'/mobile-promotions/?child',
+#	'javascript:void(0)'
+#]
 
-def get_url_from_sitemap():
-	try:
-		html = request_url.get_html_from_url(SITEMAP_URL)
-		lazada_urls = re.findall('<loc>(.*?)</loc>', html)
+redis_conn = ''
+mongo_conn = ''
+mongo_collection  = ''
+queue = ''
 
-		print len(lazada_urls), " links found!!!"
-		return lazada_urls
-	except Exception as e:
-		print e.args
-
-def get_url_to_crawl(**kwargs):
-	try:
-		#get url from redis set
+def init():
+	global redis_conn
+	global queue
+	global mongo_conn
+	global mongo_collection
+	if not redis_conn:
 		redis_conn = db.factory.get_connection('redis')
 
-		#init queue
-		#duplicate element does not allow
-		if 'queue' in kwargs:
-			q = kwargs['queue']
-		else:
-			q = Queue.Queue()
+	if not mongo_conn:
+		mongo_conn = db.factory.get_connection('mongo')
+		mongo_collection = mongo_conn['lazada_product']
 
-		lazada_urls = redis_conn.smembers('lazada_urls')
+	if not queue:
+		queue = SetQueue()
 
-		if not lazada_urls or kwargs.get('refresh_url'):  #get new url from sitemap
-			lazada_urls = get_url_from_sitemap()
-			if lazada_urls:
-				print "Importing %d links to redis sets (sets_name: lazada_urls)" % len(lazada_urls)
-				for url in lazada_urls:
-					#if not redis_conn.sismember('lazada_urls', url):
-					redis_conn.sadd('lazada_urls', url)
-					#put url to queue
-					q.put(url)
-				print "Import success!!!"
 
-			else:
-				print "No urls found from sitemap"
-		elif 'cont' in kwargs and kwargs['cont']:
-			#get mongo connection
-			mongo_conn = db.factory.get_connection('mongo')
-			#select collection
-			mongo_collection = mongo_conn['lazada_product']
-
-			urls_crawled = mongo_collection.find({}, {'url' : 1, '_id' : 0})
-			urls_crawled_set = set()
-			for url in urls_crawled:
-				urls_crawled_set.add(url['url'])
-
-			print "%s were crawled!!!" % len(urls_crawled_set) 
-
-			lazada_urls = list(lazada_urls - urls_crawled_set)
-
-			print "Continue to crawl %s urls" % len(lazada_urls)
-			for url in lazada_urls:
-				q.put(url)
-		else:
-			for url in lazada_urls:
-				q.put(url)
-
-	except Exception as e:
-		print "Cannot get url to crawl: %s" + str(e.args)
-
-def parse_lazada_product_url(**kwargs):
+def find_all_link_from_url(url):
 	try:
-		i = kwargs['i']
-		q = kwargs['queue']
-		mongo_collection = kwargs['mongo_collection']
-		
-		useproxy = False
-		if 'useproxy' in kwargs and kwargs['useproxy']:
-			useproxy = True
-		
-		while q.get():
-			#get url from queue
-			url = q.get()
+		html = request_url.get_html_from_url(url)
 
-			print "Worker %s parsing url %s" % (i, url)
-			
+		#get all link
+		soup = BeautifulSoup(html)
+		urls = soup.findAll('a')
+
+		list_urls = []
+		for url in urls:
+			href = url.get('href')
+			if href and href != INIT_URL and href != '/' and href not in list_urls and not re.search(SKIP_URL, href):
+				list_urls.append(href)
+		return list_urls
+	except Exception, e:
+		print url, str(e.args)
+
+def parse_url(url):
+	try:
+		urls = find_all_link_from_url(url)
+		for url in urls:
+			redis_conn.sadd('lazada_urls', url)
+
+			#put to queue
+			queue.put(url)
+
+		m = re.match(r".*(\d+)\.html$", url)
+		if m:  #product url
+			html = request_url.get_html_from_url(url)
+
+			parsed_html = BeautifulSoup(html)
+
 			#get product id
 			product_id = re.search(r'(\d+)\.html$', url).group(1)
-
-			#parse html from url
-			html = request_url.get_html_from_url(url, useproxy)
-			
-			#print re.findall(r'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+', html)
-			#return
-			
-			print "Trying to parse html from url %s" % url
-			
-			try:
-				parsed_html = BeautifulSoup(html)
 				
-				#parse product name
-				product_name = parsed_html.body.findAll('span', {'class' : 'product-name'})[0].text.strip()
+			#parse product name
+			product_name = parsed_html.body.findAll('span', {'class' : 'product-name'})[0].text.strip()
 
-				#parse image
-				product_image = parsed_html.body.find('img', {"data-placeholder": "placeholder.jpg"})['src']
-			
-				#parse price
-				price = parsed_html.body.find('span', {'class' : 'product-price'}).text.strip()
-				#use regular expression to replace VND and dot symbol
-				price = re.sub('\s+VND|\.', '', price)
-			
-				product_data = {
-					'product_id' : int(product_id),
-					'name'  : product_name,
-					'image' : product_image,
-					'price' : price,
-					'url'   : url
-				}
-			
-				#insert data to mongo
-				mongo_collection.insert(product_data)
-			except Exception as e:
-				print "Parse html error: %s" % str(e.args)
-				print "Pass url %s" % url
-				
-				#logging parse url fail to file
-				#with open('lazada-failed.txt', 'a') as f:
-					#f.write(url + "\n")
-				pass
-		else:
-			print "Crawl all urls"
-	except Exception as e:
-		print "Parse error: ", str(e)
+			#parse image
+			product_image = parsed_html.body.find('img', {"data-placeholder": "placeholder.jpg"})['src']
 		
-
-def crawl(**kwargs):
-	#get mongo connection
-	mongo_conn = db.factory.get_connection('mongo')
-	#select collection
-	mongo_collection = mongo_conn['lazada_product']
-
-	#use SetQueue to avoice duplicate url in Queue
-	q = SetQueue()
-
-	if 'cont' in kwargs and kwargs['cont']:
-		get_url_to_crawl(queue = q, cont = True)
-	else:
-		get_url_to_crawl(queue = q)
+			#parse price
+			price = parsed_html.body.find('span', {'class' : 'product-price'}).text.strip()
+			#use regular expression to replace VND and dot symbol
+			price = re.sub('\s+VND|\.', '', price)
+		
+			product_data = {
+				'product_id' : int(product_id),
+				'name'  : product_name,
+				'image' : product_image,
+				'price' : price,
+				'url'   : url
+			}
+		
+			#insert data to mongo
+			mongo_collection.insert(product_data)
+	except Exception, e:
+		print url, str(e.args)
 	
-	stacktracer.trace_start("trace.html")
-	
-	kwargs['mongo_collection'] = mongo_collection
-	kwargs['queue'] = q
+def crawl():
 
-	#start 5 threads
-	for i in range(1):
-		kwargs['i'] = i
-		t = threading.Thread(target=parse_lazada_product_url, kwargs=(kwargs))
+	init()
+
+	urls = redis_conn.smembers('lazada_urls')
+	
+	#first crawl
+	if not urls:
+		print "No url found from redis!!!"
+		print "Find url from init url: %s" % INIT_URL
+		#get list url from init url
+		urls = find_all_link_from_url(INIT_URL)
+		
+		for url in urls:
+			#insert all url to redis sets
+			redis_conn.sadd('lazada_urls', url)
+	
+	#continue
+	for url in urls:
+		#put to queue
+		queue.put(url)
+
+	#init threads
+	for t in xrange(10):
+		t = threading.Thread(target=start_crawl)
 		t.start()
-		
+
+def start_crawl():
+	while queue.get():
+		url = queue.get()
+
+		#remove url from redis sets
+		redis_conn.srem('lazada_urls', url)
+
+		if not url.startswith('http') and not url.startswith('\\'):
+			url = 'http://www.lazada.vn' + url
+
+		try:
+			print "parse url: %s" % url
+			parse_url(url)
+		except Exception, e:
+			print "Pass url: %s" % url
+			pass
+
+
+
