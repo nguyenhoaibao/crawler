@@ -97,7 +97,7 @@ def parse_url(url):
 			}
 		
 			#insert data to mongo
-			mongo_collection.insert(product_data)
+			mongo_collection.update({'product_id' : int(product_id)}, product_data, {upsert: true})
 	except Exception, e:
 		print url, str(e.args)
 	
