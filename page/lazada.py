@@ -4,7 +4,7 @@ from set_queue import SetQueue
 from bs4 import BeautifulSoup
 
 INIT_URL = 'http://lazada.vn'
-SKIP_URL = '\#|about|privacy|cart|customer|urlall|mobile|javascript|shipping'
+SKIP_URL = '\#|about|privacy|cart|customer|urlall|mobile|javascript|shipping|google|tumblr|facebook|twitter|apple\.com|\.php'
 #SKIP_URL = [
 #	'/',
 #	'#'
@@ -58,21 +58,24 @@ def find_all_link_from_url(url):
 
 def parse_url(url):
 	try:
+                temp = url
 		urls = find_all_link_from_url(url)
 		for url in urls:
 			redis_conn.sadd('lazada_urls', url)
 
 			#put to queue
 			queue.put(url)
-
-		m = re.match(r".*(\d+)\.html$", url)
+                
+		m = re.match(".*(\d+)\.html$", temp)
+                
 		if m:  #product url
-			html = request_url.get_html_from_url(url)
+                        print "parse product url: %s ..." % temp
+			html = request_url.get_html_from_url(temp)
 
 			parsed_html = BeautifulSoup(html)
 
 			#get product id
-			product_id = re.search(r'(\d+)\.html$', url).group(1)
+			product_id = re.search(r'(\d+)\.html$', temp).group(1)
 				
 			#parse product name
 			product_name = parsed_html.body.findAll('span', {'class' : 'product-name'})[0].text.strip()
@@ -90,7 +93,7 @@ def parse_url(url):
 				'name'  : product_name,
 				'image' : product_image,
 				'price' : price,
-				'url'   : url
+				'url'   : temp
 			}
 		
 			#insert data to mongo
@@ -110,6 +113,8 @@ def crawl():
 		print "Find url from init url: %s" % INIT_URL
 		#get list url from init url
 		urls = find_all_link_from_url(INIT_URL)
+
+                print "Find %s urls ..." % len(urls)
 		
 		for url in urls:
 			#insert all url to redis sets
@@ -120,8 +125,11 @@ def crawl():
 		#put to queue
 		queue.put(url)
 
+        print "Begin to crawl ..."
+
 	#init threads
 	for t in xrange(10):
+                print "Init thread %s ..." % t
 		t = threading.Thread(target=start_crawl)
 		t.start()
 
@@ -132,11 +140,11 @@ def start_crawl():
 		#remove url from redis sets
 		redis_conn.srem('lazada_urls', url)
 
-		if not url.startswith('http') and not url.startswith('\\'):
+		if url.startswith('/') and not url.startswith('\\'):
 			url = 'http://www.lazada.vn' + url
 
 		try:
-			print "parse url: %s" % url
+                        print "Crawling url %s ..." % url
 			parse_url(url)
 		except Exception, e:
 			print "Pass url: %s" % url

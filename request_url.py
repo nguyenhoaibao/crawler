@@ -27,7 +27,8 @@ def request_to_url(url, useproxy):
 	except requests.exceptions.Timeout:
 		raise Exception("Timeout")
 	except requests.exceptions.RequestException as e:
-		raise Exception("Error", e.args)
+		#raise Exception("Error", e.args)
+                pass
 	else:
 		return r.text
 
@@ -38,11 +39,12 @@ def get_html_from_url(url, *useproxy):
 		while not html:
 			try:
 				html = request_to_url(url, useproxy)
-			except Exception as e:	
-				print str(e.args)
+			except Exception as e:
 				#set PROXY_DICT empty
 				global PROXY_DICT
 				PROXY_DICT = {}
+                         
+                                pass
 	else:
 		print "No url specified!!!"
 	return html
