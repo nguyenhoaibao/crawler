@@ -4,7 +4,7 @@ from set_queue import SetQueue
 from bs4 import BeautifulSoup
 
 INIT_URL = 'http://lazada.vn'
-SKIP_URL = '\#|\\|about|privacy|cart|customer|urlall|mobile|javascript|shipping|google|tumblr|facebook|twitter|apple\.com|\.php|wildwingsphotography|aquoid|jerrywhitephotography|itunes|blog\.lazada|co\.|com\.|\.sg|\.vn|\.aspx|windowsphone|API|contact|huong\-dan|trung\-tam|faq'
+SKIP_URL = '\#|\\|about|privacy|cart|customer|urlall|mobile|javascript|shipping|google|tumblr|facebook|twitter|apple\.com|\.php|wildwingsphotography|aquoid|jerrywhitephotography|itunes|blog\.lazada|co\.|com\.|\.sg|\.vn|\.aspx|windowsphone|API|contact|huong\-dan|trung\-tam|faq|techinasia|linkedin|US|weibo'
 #SKIP_URL = [
 #	'/',
 #	'#'
@@ -43,22 +43,25 @@ def find_all_link_from_url(url):
 	try:
 		html = request_url.get_html_from_url(url)
 
-		#get all link
-		soup = BeautifulSoup(html)
-		urls = soup.findAll('a')
-
 		list_urls = []
-		for url in urls:
-			href = url.get('href')
-			if href and href != INIT_URL and href != '/' and href not in list_urls and not re.search(SKIP_URL, href):
-				list_urls.append(href)
+
+		if html:
+			#get all link
+			soup = BeautifulSoup(html)
+			urls = soup.findAll('a')
+
+			
+			for url in urls:
+				href = url.get('href')
+				if href and href != INIT_URL and href != '/' and href not in list_urls and not re.search(SKIP_URL, href):
+					list_urls.append(href)
 		return list_urls
 	except Exception, e:
 		print url, str(e.args)
 
 def parse_url(url):
 	try:
-                temp = url
+		temp = url
 		urls = find_all_link_from_url(url)
 		for url in urls:
 			redis_conn.sadd('lazada_urls', url)
@@ -129,7 +132,7 @@ def crawl():
 
 	#init threads
 	for t in xrange(10):
-                print "Init thread %s ..." % t
+		print "Init thread %s ..." % t
 		t = threading.Thread(target=start_crawl)
 		t.start()
 
@@ -144,7 +147,7 @@ def start_crawl():
 			url = 'http://www.lazada.vn' + url
 
 		try:
-                        print "Crawling url %s ..." % url
+			print "Crawling url %s ..." % url
 			parse_url(url)
 		except Exception, e:
 			print "Pass url: %s" % url

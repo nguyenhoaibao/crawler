@@ -26,9 +26,13 @@ def request_to_url(url, useproxy):
 			r = requests.get(url)
 	except requests.exceptions.Timeout:
 		raise Exception("Timeout")
+	except requests.exceptions.MissingSchema:
+		raise Exception("MissingSchema")
 	except requests.exceptions.RequestException as e:
-		#raise Exception("Error", e.args)
-                pass
+		raise Exception("Error", e.args)
+		#pass
+	except:
+		print "Exception"
 	else:
 		return r.text
 
@@ -36,15 +40,20 @@ def request_to_url(url, useproxy):
 def get_html_from_url(url, *useproxy):
 	html = ''
 	if url:
-		while not html:
+		#while not html:
 			try:
 				html = request_to_url(url, useproxy)
 			except Exception as e:
+
+				if e.args[0] == 'MissingSchema':
+					return ''
+
+				print str(e.args)
 				#set PROXY_DICT empty
 				global PROXY_DICT
 				PROXY_DICT = {}
                          
-                                pass
+                #pass
 	else:
 		print "No url specified!!!"
 	return html
