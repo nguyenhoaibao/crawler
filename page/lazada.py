@@ -4,7 +4,7 @@ from set_queue import SetQueue
 from bs4 import BeautifulSoup
 
 INIT_URL = 'http://lazada.vn'
-SKIP_URL = '\#|\\|about|privacy|cart|customer|urlall|mobile|javascript|shipping|google|tumblr|facebook|twitter|apple\.com|\.php|wildwingsphotography|aquoid|jerrywhitephotography|itunes|blog\.lazada|co\.|com\.|\.sg|\.vn|\.aspx|windowsphone|API|contact|huong\-dan|trung\-tam|faq|techinasia|linkedin|US|weibo'
+SKIP_URL = '\#|\\|about|privacy|cart|customer|urlall|mobile|javascript|shipping|google|tumblr|facebook|twitter|apple\.com|\.php|wildwingsphotography|aquoid|jerrywhitephotography|itunes|blog\.lazada|co\.|com\.|\.sg|\.vn|\.aspx|windowsphone|API|contact|huong\-dan|trung\-tam|faq|techinasia|linkedin|US|weibo|lzd\.co|youtube|blog|developers|ios|bit\.ly|prezi\.com|android|store|creativecommons\.org'
 #SKIP_URL = [
 #	'/',
 #	'#'
