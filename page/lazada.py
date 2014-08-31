@@ -137,7 +137,7 @@ def crawl():
 		t.start()
 
 def start_crawl():
-	while queue.get():
+	while not queue.empty():
 		url = queue.get()
 
 		#remove url from redis sets
