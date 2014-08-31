@@ -1,4 +1,6 @@
-import importlib, sys
+import importlib, sys, os
+
+os.chdir('/home/hoaibao/Development/python/crawler')
 
 def main():
 	argv = sys.argv[1:]
