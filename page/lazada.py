@@ -4,7 +4,7 @@ from set_queue import SetQueue
 from bs4 import BeautifulSoup
 
 INIT_URL = 'http://lazada.vn'
-SKIP_URL = '\#|\\|about|privacy|cart|customer|urlall|mobile|javascript|shipping|google|tumblr|facebook|twitter|apple\.com|\.php|wildwingsphotography|aquoid|jerrywhitephotography|itunes|blog\.lazada|co\.|com\.|\.sg|\.vn|\.aspx|windowsphone|API|contact|huong\-dan|trung\-tam|faq|techinasia|linkedin|US|weibo|lzd\.co|youtube|blog|developers|ios|bit\.ly|prezi\.com|android|store|creativecommons\.org'
+SKIP_URL = '\#|\\|about|privacy|cart|customer|urlall|mobile|javascript|shipping|\.php|contact|huong\-dan|trung\-tam|faq'
 #SKIP_URL = [
 #	'/',
 #	'#'
@@ -53,7 +53,13 @@ def find_all_link_from_url(url):
 			
 			for url in urls:
 				href = url.get('href')
-				if href and href != INIT_URL and href != '/' and href not in list_urls and not re.search(SKIP_URL, href):
+
+				if href and href != '/' and href != INIT_URL and not re.search(SKIP_URL, href) and href not in list_urls:
+					if not href.startswith('http://'):
+						href = INIT_URL + href
+					if not href.startswith(INIT_URL):
+						continue
+
 					list_urls.append(href)
 		return list_urls
 	except Exception, e:
@@ -134,6 +140,7 @@ def crawl():
 	for t in xrange(10):
 		print "Init thread %s ..." % t
 		t = threading.Thread(target=start_crawl)
+		t.setDaemon(True)
 		t.start()
 
 def start_crawl():
@@ -142,9 +149,6 @@ def start_crawl():
 
 		#remove url from redis sets
 		redis_conn.srem('lazada_urls', url)
-
-		if url.startswith('/') and not url.startswith('\\'):
-			url = 'http://www.lazada.vn' + url
 
 		try:
 			print "Crawling url %s ..." % url
