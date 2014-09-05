@@ -17,8 +17,11 @@ def main():
 		if argv[2] == '--useproxy' and argv[3] == 'true':
 			useproxy = True
 
-	data = importlib.import_module("page.%s" % site_crawl);
-	data.crawl()
+	data = importlib.import_module("page.%s" % site_crawl)
+
+	p = getattr(data, site_crawl.title())()
+
+	p.crawl()
 
 
 if __name__ == '__main__':
