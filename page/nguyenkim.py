@@ -6,7 +6,7 @@ from crawl import Crawl
 
 INIT_URL = 'http://www.nguyenkim.com'
 SKIP_URL = '\#|\\|trung\-tam|gioi\-thieu|tieu\-chi|doi\-tac|dich\-vu|chinh\-sach|khu\-vuc|huong\-dan|doi\-tra|lien\-he|hop\-tac|giai\-thuong|bao\-mat|tuyen\-dung|dang\-ky|gio\-hang|\.php|khach\-hang|tai\-khoan|don\-hang|san\-pham|tra\-hang|lua\-dao|sinh\-nhat\-online'
-
+THREAD_NUM = 10
 
 class Nguyenkim(Crawl):
 	"""docstring for NguyenkimCrawl"""
@@ -93,22 +93,22 @@ class Nguyenkim(Crawl):
 	        print "Begin to crawl ..."
 
 		#init threads
-		for t in xrange(1):
+		for t in xrange(THREAD_NUM):
 			print "Init thread %s ..." % t
 			t = threading.Thread(target=self.start_crawl)
 			#t.setDaemon(True)
 			t.start()
 
 	def start_crawl(self):
-		#while True:
-		url = self.queue.get()
+		while not self.queue.empty():
+			url = self.queue.get()
 
-		#remove url from redis sets
-		self.redis_conn.srem('nguyenkim_urls', url)
+			#remove url from redis sets
+			self.redis_conn.srem('nguyenkim_urls', url)
 
-		try:
-			print "Crawling url %s ..." % url
-			self.parse_url(url)
-		except Exception, e:
-			print "Pass url: %s" % url
-			pass
+			try:
+				print "Crawling url %s ..." % url
+				self.parse_url(url)
+			except Exception, e:
+				print "Pass url: %s" % url
+				pass

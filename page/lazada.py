@@ -7,6 +7,7 @@ from set_queue import SetQueue
 
 INIT_URL = 'http://www.lazada.vn'
 SKIP_URL = '\#|\\|about|privacy|cart|customer|urlall|mobile|javascript|shipping|\.php|contact|huong\-dan|trung\-tam|faq'
+THREAD_NUM = 10
 
 class Lazada(Crawl):
 	"""docstring for Lazada"""
@@ -85,22 +86,22 @@ class Lazada(Crawl):
 	        print "Begin to crawl ..."
 
 		#init threads
-		for t in xrange(1):
+		for t in xrange(THREAD_NUM):
 			print "Init thread %s ..." % t
 			t = threading.Thread(target=self.start_crawl)
 			#t.setDaemon(True)
 			t.start()
 
 	def start_crawl(self):
-		#while True:
-		url = self.queue.get()
+		while not self.queue.empty():
+			url = self.queue.get()
 
-		#remove url from redis sets
-		self.redis_conn.srem('lazada_urls', url)
+			#remove url from redis sets
+			self.redis_conn.srem('lazada_urls', url)
 
-		try:
-			print "Crawling url %s ..." % url
-			self.parse_url(url)
-		except Exception, e:
-			print "Pass url: %s" % url
-			pass
+			try:
+				print "Crawling url %s ..." % url
+				self.parse_url(url)
+			except Exception, e:
+				print "Pass url: %s" % url
+				pass

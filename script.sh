@@ -9,17 +9,17 @@ date=`date +"%Y-%m-%d"`
 #Start process
 start() {
 	echo "Starting $prog"
-    /usr/bin/python $document_root/$worker --site lazada &
+    /usr/bin/python $document_root/$worker --site "$1" &
 }
 
 # Stop all process
 stop() {
 	echo "Stopping $prog"
-	ps -ef | grep "$worker" | grep -v grep | awk '{print$2}' | xargs kill -9
+	ps -ef | grep "$1" | grep -v grep | awk '{print$2}' | xargs kill -9
 }
 # Detect process
 detect() {
-	current_num_prog=`ps -ef | grep -v grep | grep -c "$worker"`
+	current_num_prog=`ps -ef | grep -v grep | grep -c "$1"`
 	if [ "$current_num_prog" -lt "$num_prog" ]; then
 		let new_prog=$num_prog-$current_num_prog
 		i=1
@@ -28,27 +28,27 @@ detect() {
 			let i++
 		done
 	else
-		echo "$worker is running..."
+		echo "$1 is running..."
 	fi
 }
 case "$1" in
 	"start" )
-        start
+        start "$2"
            ;;
 	"stop" )
-	    stop
+	    stop "$2"
            ;;
 	"restart" )
-	    stop
-	    detect
+	    stop "$2"
+	    detect "$2"
            ;;
 	"detect" )
-        detect
+        detect "$2"
            ;;
      	* )
-           echo "Usage: $prog {start|stop|restart|detect)"
+           echo "Usage: $prog {start|stop|restart|detect} {sitename}"
            exit 1
 esac
 
-ps -ef | grep -v grep | grep "$worker"
+ps -ef | grep -v grep | grep "$2"
 exit 0
