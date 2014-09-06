@@ -19,12 +19,12 @@ stop() {
 }
 # Detect process
 detect() {
-	current_num_prog=`ps -ef | grep -v grep | grep -c "$1"`
+	current_num_prog=`ps -ef | grep -v grep | grep -c $1`
 	if [ "$current_num_prog" -lt "$num_prog" ]; then
 		let new_prog=$num_prog-$current_num_prog
 		i=1
 		while [ $i -le $new_prog ]; do
-			start
+			start "$1"
 			let i++
 		done
 	else

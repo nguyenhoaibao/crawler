@@ -7,7 +7,7 @@ from set_queue import SetQueue
 
 INIT_URL = 'http://www.lazada.vn'
 SKIP_URL = '\#|\\|about|privacy|cart|customer|urlall|mobile|javascript|shipping|\.php|contact|huong\-dan|trung\-tam|faq'
-THREAD_NUM = 10
+THREAD_NUM = 1
 
 class Lazada(Crawl):
 	"""docstring for Lazada"""
@@ -34,30 +34,34 @@ class Lazada(Crawl):
 
 				parsed_html = BeautifulSoup(html)
 
-				#get product id
-				product_id = re.search(r'(\d+)\.html$', temp).group(1)
-					
-				#parse product name
-				product_name = parsed_html.body.findAll('span', {'class' : 'product-name'})[0].text.strip()
+				product_price_obj = parsed_html.body.find('span', {'class' : 'product-price'})
 
-				#parse image
-				product_image = parsed_html.body.find('img', {"data-placeholder": "placeholder.jpg"})['src']
-			
-				#parse price
-				price = parsed_html.body.find('span', {'class' : 'product-price'}).text.strip()
-				#use regular expression to replace VND and dot symbol
-				price = re.sub('\s+VND|\.', '', price)
-			
-				product_data = {
-					'product_id' : int(product_id),
-					'name'  : product_name,
-					'image' : product_image,
-					'price' : price,
-					'url'   : temp
-				}
-			
-				#insert data to mongo
-				self.mongo_collection.update({'product_id': int(product_id)}, product_data, upsert = True)
+				if product_price_obj:
+					
+					#get product id
+					product_id = re.search(r'(\d+)\.html$', temp).group(1)
+						
+					#parse product name
+					product_name = parsed_html.body.findAll('span', {'class' : 'product-name'})[0].text.strip()
+
+					#parse image
+					product_image = parsed_html.body.find('img', {"data-placeholder": "placeholder.jpg"})['src']
+				
+					#parse price
+					price = product_price_obj.text.strip()
+					#use regular expression to replace VND and dot symbol
+					price = re.sub('\s+VND|\.', '', price)
+				
+					product_data = {
+						'product_id' : int(product_id),
+						'name'  : product_name,
+						'image' : product_image,
+						'price' : price,
+						'url'   : temp
+					}
+				
+					#insert data to mongo
+					self.mongo_collection.update({'product_id': int(product_id)}, product_data, upsert = True)
 		except Exception, e:
 			print url, str(e.args)
 	
@@ -93,11 +97,13 @@ class Lazada(Crawl):
 			t.start()
 
 	def start_crawl(self):
-		while not self.queue.empty():
+		#while not self.queue.empty():
 			url = self.queue.get()
 
 			#remove url from redis sets
 			self.redis_conn.srem('lazada_urls', url)
+
+			url = 'http://www.lazada.vn/asus-zenfone-4-a400cxg-tft-40-5mp-8gb-2-sim-den-126634.html'
 
 			try:
 				print "Crawling url %s ..." % url

@@ -31,40 +31,42 @@ class Nguyenkim(Crawl):
 	                        print "parse product url: %s ..." % temp
 				html = request_url.get_html_from_url(temp)
 
-				parsed_html = BeautifulSoup(html)
+				parsed_html = BeautifulSoup(html.encode('utf-8'))
 
 				
-				with open('Failed.py', 'w') as file_:
-				    file_.write(html.encode('utf-8'))
+				#with open('Failed.py', 'w') as file_:
+				    #file_.write(html.encode('utf-8'))
 
-				#print "here"
-				#print parsed_html.body.find('div', {'class' : 'block_product-title'})
-				return
-
-				#get product id
-				product_id = re.search(r'(\d+)\.html$', temp).group(1)
-					
 				#parse product name
-				product_name = parsed_html.body.findAll('span', {'class' : 'product-name'})[0].text.strip()
+				product_obj = parsed_html.body.find('h1', {'class' : 'block_product-title'})
 
-				#parse image
-				product_image = parsed_html.body.find('img', {"data-placeholder": "placeholder.jpg"})['src']
-			
-				#parse price
-				price = parsed_html.body.find('span', {'class' : 'product-price'}).text.strip()
-				#use regular expression to replace VND and dot symbol
-				price = re.sub('\s+VND|\.', '', price)
-			
-				product_data = {
-					'product_id' : int(product_id),
-					'name'  : product_name,
-					'image' : product_image,
-					'price' : price,
-					'url'   : temp
-				}
-			
-				#insert data to mongo
-				self.mongo_collection.update({'product_id': int(product_id)}, product_data, upsert = True)
+				if product_obj:
+
+					#product name
+					product_name = product_obj.text.strip()
+
+					#get product id
+					product_id = parsed_html.body.find('span', attrs={'id': re.compile(r"product_code.*")}).text.strip()
+					
+					#parse image
+					product_image = parsed_html.body.find('img', {"class": "pict"})['src']
+				
+					#parse price
+					price = parsed_html.body.findAll('span', {'class' : 'price-num'})[0].text.strip()
+					#use regular expression to replace VND and dot symbol
+					price = re.sub('\s+VND|\.', '', price)
+
+				
+					product_data = {
+						'product_id' : product_id,
+						'name'  : product_name,
+						'image' : product_image,
+						'price' : price,
+						'url'   : temp
+					}
+				
+					#insert data to mongo
+					self.mongo_collection.update({'product_id': product_id}, product_data, upsert = True)
 		except Exception, e:
 			print url, str(e.args)
 	
