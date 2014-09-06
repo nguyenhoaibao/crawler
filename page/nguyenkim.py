@@ -29,9 +29,10 @@ class Nguyenkim(Crawl):
 			m = re.match(".*\.html$", temp)
 
 			html = request_url.get_html_from_url(temp)
-			with open('Failed.py', 'w') as file_:
-				file_.write(html.encode('utf-8'))
-			return
+			
+			#with open('Failed.py', 'w') as file_:
+				#file_.write(html.encode('utf-8'))
+			#return
 	                
 			if m:  #product url
 	                        print "parse product url: %s ..." % temp
