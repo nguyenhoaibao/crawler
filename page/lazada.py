@@ -7,7 +7,8 @@ from set_queue import SetQueue
 
 INIT_URL = 'http://www.lazada.vn'
 SKIP_URL = '\#|\\|about|privacy|cart|customer|urlall|mobile|javascript|shipping|\.php|contact|huong\-dan|trung\-tam|faq'
-THREAD_NUM = 1
+THREAD_NUM = 10
+REDIS_URLS = 'lazada_urls'
 
 class Lazada(Crawl):
 	"""docstring for Lazada"""
@@ -21,7 +22,7 @@ class Lazada(Crawl):
 			temp = url
 			urls = self.find_all_link_from_url(url)
 			for url in urls:
-				self.redis_conn.sadd('lazada_urls', url)
+				self.redis_conn.sadd(REDIS_URLS, url)
 
 				#put to queue
 				self.queue.put(url)
@@ -37,7 +38,7 @@ class Lazada(Crawl):
 				product_price_obj = parsed_html.body.find('span', {'class' : 'product-price'})
 
 				if product_price_obj:
-					
+
 					#get product id
 					product_id = re.search(r'(\d+)\.html$', temp).group(1)
 						
@@ -67,7 +68,7 @@ class Lazada(Crawl):
 	
 	def crawl(self):
 
-		urls = self.redis_conn.smembers('lazada_urls')
+		urls = self.redis_conn.smembers(REDIS_URLS)
 		
 		#first crawl
 		if not urls:
@@ -80,7 +81,7 @@ class Lazada(Crawl):
 			
 			for url in urls:
 				#insert all url to redis sets
-				self.redis_conn.sadd('lazada_urls', url)
+				self.redis_conn.sadd(REDIS_URLS, url)
 		
 		#continue
 		for url in urls:
@@ -101,9 +102,7 @@ class Lazada(Crawl):
 			url = self.queue.get()
 
 			#remove url from redis sets
-			self.redis_conn.srem('lazada_urls', url)
-
-			url = 'http://www.lazada.vn/asus-zenfone-4-a400cxg-tft-40-5mp-8gb-2-sim-den-126634.html'
+			self.redis_conn.srem(REDIS_URLS, url)
 
 			try:
 				print "Crawling url %s ..." % url

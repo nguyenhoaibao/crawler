@@ -4,17 +4,17 @@ from set_queue import SetQueue
 from bs4 import BeautifulSoup
 from crawl import Crawl
 
-INIT_URL = 'http://www.nguyenkim.com'
-SKIP_URL = '\#|\\|trung\-tam|gioi\-thieu|tieu\-chi|doi\-tac|dich\-vu|chinh\-sach|khu\-vuc|huong\-dan|doi\-tra|lien\-he|hop\-tac|giai\-thuong|bao\-mat|tuyen\-dung|dang\-ky|gio\-hang|\.php|khach\-hang|tai\-khoan|don\-hang|san\-pham|tra\-hang|lua\-dao|sinh\-nhat\-online'
+INIT_URL = 'http://tiki.vn'
+SKIP_URL = '\#|\\|customer|order\-history|about|tuyen\-dung|faq|tin\-tham\-khao|checkout|market\-place|sgdtmdt|thuong\-hieu'
 THREAD_NUM = 10
-REDIS_URLS = 'nguyenkim_urls'
+REDIS_URLS = 'tiki_urls'
 
-class Nguyenkim(Crawl):
-	"""docstring for Nguyenkim"""
+class Tiki(Crawl):
+	"""docstring for Tiki"""
 	def __init__(self):
 		Crawl.__init__(self, INIT_URL, SKIP_URL)
 		#select collection
-		self.mongo_collection = self.mongo_conn['nguyenkim_product']
+		self.mongo_collection = self.mongo_conn['tiki_product']
 
 	def parse_url(self, url):
 		try:
@@ -26,12 +26,11 @@ class Nguyenkim(Crawl):
 				#put to queue
 				self.queue.put(url)
 	                
-			m = re.match(".*\.html$", temp)
-
-			html = request_url.get_html_from_url(temp)
-			with open('Failed.py', 'w') as file_:
-				file_.write(html.encode('utf-8'))
-			return
+			m = re.match(".*p\d+\.html", temp)
+			
+			#with open('Failed.py', 'w') as file_:
+				#file_.write(html.encode('utf-8'))
+			#return
 	                
 			if m:  #product url
 	                        print "parse product url: %s ..." % temp
@@ -44,27 +43,29 @@ class Nguyenkim(Crawl):
 				    #file_.write(html.encode('utf-8'))
 
 				#parse product name
-				product_obj = parsed_html.body.find('h1', {'class' : 'block_product-title'})
+				product_obj = parsed_html.body.find('h1', {'class' : 'item-name'})
 
 				if product_obj:
 
 					#product name
 					product_name = product_obj.text.strip()
-
+					
 					#get product id
-					product_id = parsed_html.body.find('span', attrs={'id': re.compile(r"product_code.*")}).text.strip()
+					product_id = re.search(r'.*p(\d+)\.html', temp).group(1)
 					
 					#parse image
-					product_image = parsed_html.body.find('img', {"class": "pict"})['src']
+					product_image = parsed_html.body.find('img', attrs={'itemprop': 'image'})['src']
 				
 					#parse price
-					price = parsed_html.body.findAll('span', {'class' : 'price-num'})[0].text.strip()
-					#use regular expression to replace VND and dot symbol
-					price = re.sub('\s+VND|\.', '', price)
+					price = parsed_html.body.find('span', attrs={'itemprop': 'price'}).text.strip()
+					price = u'%s' % price
+					price = price.encode("ascii", "ignore")
 
+					#use regular expression to replace VND and dot symbol
+					price = re.sub('\.', '', price)
 				
 					product_data = {
-						'product_id' : product_id,
+						'product_id' : (int) product_id,
 						'name'  : product_name,
 						'image' : product_image,
 						'price' : price,
@@ -72,7 +73,7 @@ class Nguyenkim(Crawl):
 					}
 				
 					#insert data to mongo
-					self.mongo_collection.update({'product_id': product_id}, product_data, upsert = True)
+					self.mongo_collection.update({'product_id': (int) product_id}, product_data, upsert = True)
 		except Exception, e:
 			print url, str(e.args)
 	
@@ -113,6 +114,8 @@ class Nguyenkim(Crawl):
 
 			#remove url from redis sets
 			self.redis_conn.srem(REDIS_URLS, url)
+
+			url = 'http://tiki.vn/hop-ho-so-giay-box-file-a4-e-p78198.html?ref=c1860.c1862.'
 
 			try:
 				print "Crawling url %s ..." % url
