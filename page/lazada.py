@@ -98,7 +98,7 @@ class Lazada(Crawl):
 			t.start()
 
 	def start_crawl(self):
-		#while not self.queue.empty():
+		while not self.queue.empty():
 			url = self.queue.get()
 
 			#remove url from redis sets
