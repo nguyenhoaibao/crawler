@@ -65,7 +65,7 @@ class Tiki(Crawl):
 					price = re.sub('\.', '', price)
 				
 					product_data = {
-						'product_id' : (int) product_id,
+						'product_id' : int(product_id),
 						'name'  : product_name,
 						'image' : product_image,
 						'price' : price,
@@ -73,7 +73,7 @@ class Tiki(Crawl):
 					}
 				
 					#insert data to mongo
-					self.mongo_collection.update({'product_id': (int) product_id}, product_data, upsert = True)
+					self.mongo_collection.update({'product_id': int(product_id)}, product_data, upsert = True)
 		except Exception, e:
 			print url, str(e.args)
 	
