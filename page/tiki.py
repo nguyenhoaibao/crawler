@@ -115,8 +115,6 @@ class Tiki(Crawl):
 			#remove url from redis sets
 			self.redis_conn.srem(REDIS_URLS, url)
 
-			url = 'http://tiki.vn/hop-ho-so-giay-box-file-a4-e-p78198.html?ref=c1860.c1862.'
-
 			try:
 				print "Crawling url %s ..." % url
 				self.parse_url(url)

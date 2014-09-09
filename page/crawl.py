@@ -35,10 +35,14 @@ class Crawl():
 				for url in urls:
 					href = url.get('href')
 
-					if href and href != '/' and href != self.init_url and not re.search(self.skip_url, href) and href not in list_urls:
-						if not href.startswith('http://'):
+					if href and href != '/' and href not in list_urls and href != self.init_url:
+						if href.startswith('/'):
 							href = self.init_url + href
+
 						if not href.startswith(self.init_url):
+							continue
+
+						if re.search(self.skip_url, href):
 							continue
 
 						list_urls.append(href)
