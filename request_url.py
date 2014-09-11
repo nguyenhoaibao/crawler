@@ -23,10 +23,13 @@ def renew_connection():
     conn.send_signal("NEWNYM")
     conn.close()
 
-def request_to_url(url, useproxy):
+def request_to_url(url):
 	try:
 		init()
 		resp = session.get(url, timeout=TIMEOUT)
+
+		print resp
+		return
 
 		#if useproxy:
 			#global PROXY_DICT
@@ -52,7 +55,7 @@ def request_to_url(url, useproxy):
 def get_html_from_url(url):
 	html = ''
 	if url:
-		while not html:
+		#while not html:
 			try:
 				html = request_to_url(url)
 			except Exception as e:

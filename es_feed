@@ -1,0 +1,19 @@
+curl -XPUT 'http://localhost:9200/_river/lazada/_meta' -d '{ 
+    "type": "mongodb", 
+    "mongodb": {
+      "servers":
+      [
+        { "host": "23.92.53.164", "port": 27017 }
+      ],
+      "db": "product", 
+      "collection": "lazada_product"
+    }, 
+    "index": {
+      "name": "pd", 
+      "type": "lazada" 
+    }
+  }'
+
+  web: 108.61.217.153
+
+  crawl: 23.92.53.164
