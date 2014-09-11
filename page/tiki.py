@@ -76,6 +76,7 @@ class Tiki(Crawl):
 					self.mongo_collection.update({'product_id': int(product_id)}, product_data, upsert = True)
 		except Exception, e:
 			print url, str(e.args)
+			pass
 	
 	def crawl(self):
 

@@ -22,30 +22,34 @@ class Crawl():
 
 	def find_all_link_from_url(self, url):
 		try:
-			html = request_url.get_html_from_url(url)
-
+			urls = ''
 			list_urls = []
 
-			if html:
-				#get all link
-				soup = BeautifulSoup(html)
-				urls = soup.findAll('a')
+			while not urls:
+				html = request_url.get_html_from_url(url)
 
-				
-				for url in urls:
-					href = url.get('href')
+				if html:
+					#get all link
+					soup = BeautifulSoup(html)
+					urls = soup.findAll('a')
 
-					if href and href != '/' and href not in list_urls and href != self.init_url:
-						if href.startswith('/'):
-							href = self.init_url + href
+					if urls:
+						for url in urls:
+							href = url.get('href')
 
-						if not href.startswith(self.init_url):
-							continue
+							if href and href != '/' and href not in list_urls and href != self.init_url:
+								if href.startswith('/'):
+									href = self.init_url + href
 
-						if re.search(self.skip_url, href):
-							continue
+								if not href.startswith(self.init_url):
+									continue
 
-						list_urls.append(href)
-			return list_urls
+								if re.search(self.skip_url, href):
+									continue
+
+								list_urls.append(href)
+						return list_urls
+					else:
+						request_url.renew_connection()
 		except Exception, e:
 			print url, str(e.args)
