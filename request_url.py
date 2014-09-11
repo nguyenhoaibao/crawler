@@ -28,9 +28,6 @@ def request_to_url(url):
 		init()
 		resp = session.get(url, timeout=TIMEOUT)
 
-		print resp
-		return
-
 		#if useproxy:
 			#global PROXY_DICT
 			#if not PROXY_DICT:
