@@ -55,7 +55,7 @@ def request_to_url(url):
 def get_html_from_url(url):
 	html = ''
 	if url:
-		#while not html:
+		while not html:
 			try:
 				html = request_to_url(url)
 			except Exception as e:
