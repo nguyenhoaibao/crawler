@@ -7,7 +7,7 @@ from bs4 import BeautifulSoup
 
 class Crawl():
 	"""class crawl"""
-	def __init__(self, init_url, skip_url):
+	def __init__(self, init_url, skip_url, use_tor):
 		self.queue = SetQueue()
 
 		#init redis connection
@@ -17,8 +17,8 @@ class Crawl():
 		self.mongo_conn = db.factory.get_connection('mongo')
 
 		self.init_url = init_url
-
 		self.skip_url = skip_url
+		self.use_tor  = use_tor
 
 	def find_all_link_from_url(self, url):
 		try:
@@ -26,7 +26,7 @@ class Crawl():
 			list_urls = []
 
 			while not urls:
-				html = request_url.get_html_from_url(url)
+				html = request_url.get_html_from_url(url, self.use_tor)
 
 				if html:
 					#get all link

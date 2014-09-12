@@ -9,11 +9,12 @@ INIT_URL = 'http://www.lazada.vn'
 SKIP_URL = '\#|\\|about|privacy|cart|customer|urlall|mobile|javascript|shipping|\.php|contact|huong\-dan|trung\-tam|faq'
 THREAD_NUM = 10
 REDIS_URLS = 'lazada_urls'
+USE_TOR = False
 
 class Lazada(Crawl):
 	"""docstring for Lazada"""
 	def __init__(self):
-		Crawl.__init__(self, INIT_URL, SKIP_URL)
+		Crawl.__init__(self, INIT_URL, SKIP_URL, USE_TOR)
 		#select collection
 		self.mongo_collection = self.mongo_conn['lazada_product']
 

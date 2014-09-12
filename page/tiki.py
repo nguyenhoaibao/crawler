@@ -8,11 +8,12 @@ INIT_URL = 'http://tiki.vn'
 SKIP_URL = '\#|\\|customer|order\-history|about|tuyen\-dung|faq|tin\-tham\-khao|checkout|market\-place|sgdtmdt|thuong\-hieu'
 THREAD_NUM = 10
 REDIS_URLS = 'tiki_urls'
+USE_TOR = True
 
 class Tiki(Crawl):
 	"""docstring for Tiki"""
 	def __init__(self):
-		Crawl.__init__(self, INIT_URL, SKIP_URL)
+		Crawl.__init__(self, INIT_URL, SKIP_URL, USE_TOR)
 		#select collection
 		self.mongo_collection = self.mongo_conn['tiki_product']
 

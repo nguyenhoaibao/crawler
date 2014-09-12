@@ -8,11 +8,12 @@ INIT_URL = 'http://www.nguyenkim.com'
 SKIP_URL = '\#|\\|trung\-tam|gioi\-thieu|tieu\-chi|doi\-tac|dich\-vu|chinh\-sach|khu\-vuc|huong\-dan|doi\-tra|lien\-he|hop\-tac|giai\-thuong|bao\-mat|tuyen\-dung|dang\-ky|gio\-hang|\.php|khach\-hang|tai\-khoan|don\-hang|san\-pham|tra\-hang|lua\-dao|sinh\-nhat\-online'
 THREAD_NUM = 10
 REDIS_URLS = 'nguyenkim_urls'
+USE_TOR = False
 
 class Nguyenkim(Crawl):
 	"""docstring for Nguyenkim"""
 	def __init__(self):
-		Crawl.__init__(self, INIT_URL, SKIP_URL)
+		Crawl.__init__(self, INIT_URL, SKIP_URL, USE_TOR)
 		#select collection
 		self.mongo_collection = self.mongo_conn['nguyenkim_product']
 

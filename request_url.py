@@ -1,14 +1,11 @@
 import requests, requesocks, re
 from TorCtl import TorCtl
 
-PROXY_DICT = {}
-TIMEOUT = 24
-
 session = ''
 
 TIMEOUT = 48
 
-def init():
+def init_tor_session():
 	global session
 	if not session:
 		session = requesocks.session()
@@ -16,16 +13,25 @@ def init():
     		'http': 'socks5://127.0.0.1:9050',
     		'https': 'socks5://127.0.0.1:9050'
 		}
-		session.headers['User-Agent'] = 'Mozilla/5.0 (X11; Linux i686) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/30.0.1599.66 Safari/537.36'
+		session.headers['User-Agent'] = 'Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/37.0.2062.120 Safari/537.36'
+
+def init():
+	global session
+	if not session:
+		session = requests.session()
+		session.headers['User-Agent'] = 'Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/37.0.2062.120 Safari/537.36'
 
 def renew_connection():
     conn = TorCtl.connect(controlAddr="127.0.0.1", controlPort=9051, passphrase="Camicyoab")
     conn.send_signal("NEWNYM")
     conn.close()
 
-def request_to_url(url):
+def request_to_url(url, use_tor):
 	try:
-		init()
+		if use_tor:
+			init_tor_session()
+		else:
+			init()
 		resp = session.get(url, timeout=TIMEOUT)
 
 		#if useproxy:
@@ -49,15 +55,16 @@ def request_to_url(url):
 		return resp.text
 
 
-def get_html_from_url(url):
+def get_html_from_url(url, use_tor):
 	html = ''
 	if url:
 		while not html:
 			try:
-				html = request_to_url(url)
+				html = request_to_url(url, use_tor)
 			except Exception as e:
 				#print str(e.args)
-				renew_connection()
+				if use_tor:
+					renew_connection()
                 pass
 	else:
 		print "No url specified!!!"
