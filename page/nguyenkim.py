@@ -28,8 +28,6 @@ class Nguyenkim(Crawl):
 				self.queue.put(url)
 	                
 			m = re.match(".*\.html$", temp)
-
-			html = request_url.get_html_from_url(temp)
 			
 			#with open('Failed.py', 'w') as file_:
 				#file_.write(html.encode('utf-8'))
