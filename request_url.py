@@ -49,8 +49,8 @@ def request_to_url(url, use_tor):
 	except requests.exceptions.RequestException as e:
 		raise Exception("Error", e.args)
 		#pass
-	except:
-		print "Exception"
+	except Exception as e:
+		raise Exception("Error", e.args)
 	else:
 		return resp.text
 
