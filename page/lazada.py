@@ -32,7 +32,7 @@ class Lazada(Crawl):
 	                
 			if m:  #product url
 	                        print "parse product url: %s ..." % temp
-				html = request_url.get_html_from_url(temp)
+				html = request_url.get_html_from_url(temp, USE_TOR)
 
 				parsed_html = BeautifulSoup(html)
 
