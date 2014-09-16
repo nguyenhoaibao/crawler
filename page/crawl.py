@@ -46,6 +46,8 @@ class Crawl():
 
 								if re.search(self.skip_url, href):
 									continue
+								
+								href = re.sub(r'\?.*$', '', href)
 
 								list_urls.append(href)
 						return list_urls
