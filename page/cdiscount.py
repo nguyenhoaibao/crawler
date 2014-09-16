@@ -4,18 +4,18 @@ from set_queue import SetQueue
 from bs4 import BeautifulSoup
 from crawl import Crawl
 
-INIT_URL = 'http://www.nguyenkim.com'
-SKIP_URL = '\#|\\|trung\-tam|gioi\-thieu|tieu\-chi|lien\-he|giai\-thuong|bao\-mat|dang\-ky|gio\-hang|\.php|khach\-hang'
+INIT_URL = 'http://www.cdiscount.vn'
+SKIP_URL = '\#|\\|huong\-dan\-mua\-hang|checkout|customer'
 THREAD_NUM = 10
-REDIS_URLS = 'nguyenkim_urls'
+REDIS_URLS = 'cdiscount_urls'
 USE_TOR = False
 
-class Nguyenkim(Crawl):
-	"""docstring for Nguyenkim"""
+class Cdiscount(Crawl):
+	"""docstring for Cdiscount"""
 	def __init__(self):
 		Crawl.__init__(self, INIT_URL, SKIP_URL, USE_TOR)
 		#select collection
-		self.mongo_collection = self.mongo_conn['nguyenkim_product']
+		self.mongo_collection = self.mongo_conn['cdiscount_product']
 
 	def parse_url(self, url):
 		try:
@@ -44,27 +44,33 @@ class Nguyenkim(Crawl):
 				    #file_.write(html.encode('utf-8'))
 
 				#parse product name
-				product_obj = parsed_html.body.find('h1', {'class' : 'block_product-title'})
+				product_obj = parsed_html.body.find('h1', attrs={'itemprop': 'name'})
 
 				if product_obj:
 
 					#product name
 					product_name = product_obj.text.strip()
-
+					print product_name
 					#get product id
-					product_id = parsed_html.body.find('span', attrs={'id': re.compile(r"product_code.*")}).text.strip()
+					product_id = parsed_html.body.find('select', {'id': 'estimated-time-select'})['data-pid']
 					
 					#parse image
-					product_image = parsed_html.body.find('img', {"class": "pict"})['src']
+					product_image = parsed_html.body.find('a', {'id': 'zoom1'}).find('img')['src']
 				
 					#parse price
-					price = parsed_html.body.findAll('span', {'class' : 'price-num'})[0].text.strip()
-					#use regular expression to replace VND and dot symbol
-					price = re.sub('\s+VND|\.', '', price)
+					price = parsed_html.body.findAll('span', attrs={'class': 'price', 'id': re.compile(r".*")})
+					if len(price) == 2:
+						price = u'%s' % price[1].text.strip()
+					else:
+						price = u'%s' % price[0].text.strip()
+					
+					price = price.encode("ascii", "ignore")
 
+					#use regular expression to replace VND and dot symbol
+					price = re.sub('\.', '', price)
 				
 					product_data = {
-						'product_id' : product_id,
+						'product_id' : int(product_id),
 						'name'  : product_name,
 						'image' : product_image,
 						'price' : price,
@@ -72,9 +78,10 @@ class Nguyenkim(Crawl):
 					}
 				
 					#insert data to mongo
-					self.mongo_collection.update({'product_id': product_id}, product_data, upsert = True)
+					self.mongo_collection.update({'product_id': int(product_id)}, product_data, upsert = True)
 		except Exception, e:
 			print url, str(e.args)
+			pass
 	
 	def crawl(self):
 
