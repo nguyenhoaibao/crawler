@@ -30,7 +30,12 @@ class Crawl():
 
 				if html:
 					#get all link
+					#trick for parse lazada page
+					#TODO: test other page
 					soup = BeautifulSoup(html)
+					if self.init_url == 'http://www.lazada.vn':
+						soup = BeautifulSoup(html, 'html5lib')
+					
 					urls = soup.findAll('a')
 
 					if urls:
