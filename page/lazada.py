@@ -1,9 +1,9 @@
 import threading, re
 from bs4 import BeautifulSoup
 
-import db.factory, request_url
+import request_url
 from crawl import Crawl
-from set_queue import SetQueue
+from background import tasks
 
 INIT_URL = 'http://www.lazada.vn'
 SKIP_URL = '\#|\\|about|privacy|cart|customer|urlall|mobile|javascript|shipping|\.php|contact|huong\-dan|trung\-tam|faq'
@@ -31,39 +31,7 @@ class Lazada(Crawl):
 			m = re.match(".*(\d+)\.html$", temp)
 	                
 			if m:  #product url
-	                        print "parse product url: %s ..." % temp
-				html = request_url.get_html_from_url(temp, USE_TOR)
-
-				parsed_html = BeautifulSoup(html)
-
-				product_price_obj = parsed_html.body.find('span', {'class' : 'product-price'})
-
-				if product_price_obj:
-
-					#get product id
-					product_id = re.search(r'(\d+)\.html$', temp).group(1)
-						
-					#parse product name
-					product_name = parsed_html.body.findAll('span', {'class' : 'product-name'})[0].text.strip()
-
-					#parse image
-					product_image = parsed_html.body.find('img', {"data-placeholder": "placeholder.jpg"})['src']
-				
-					#parse price
-					price = product_price_obj.text.strip()
-					#use regular expression to replace VND and dot symbol
-					price = re.sub('\s+VND|\.', '', price)
-				
-					product_data = {
-						'product_id' : int(product_id),
-						'name'  : product_name,
-						'image' : product_image,
-						'price' : price,
-						'url'   : temp
-					}
-				
-					#insert data to mongo
-					self.mongo_collection.update({'product_id': int(product_id)}, product_data, upsert = True)
+				tasks.parse_product_html.delay('lazada', temp)
 		except Exception, e:
 			print url, str(e.args)
 	
@@ -105,9 +73,53 @@ class Lazada(Crawl):
 			#remove url from redis sets
 			self.redis_conn.srem(REDIS_URLS, url)
 
+			url = 'http://www.lazada.vn/samsung-galaxy-v-ips-4-30-mp-4-gb-trang-222182.html'
+
 			try:
 				print "Crawling url %s ..." % url
 				self.parse_url(url)
 			except Exception, e:
 				print "Pass url: %s" % url
 				pass
+
+	def parse_product_data(self, url):
+		try:
+			#print "parse product url: %s ..." % temp
+			html = request_url.get_html_from_url(url, USE_TOR)
+
+			if html:
+				parsed_html = BeautifulSoup(html, 'html5lib')
+
+				product_price_obj = parsed_html.body.find('span', {'class' : 'product-price'})
+
+				if product_price_obj:
+
+					#get product id
+					product_id = re.search(r'(\d+)\.html$', url).group(1)
+						
+					#parse product name
+					product_name = parsed_html.body.findAll('span', {'class' : 'product-name'})[0].text.strip()
+
+					#parse image
+					product_image = parsed_html.body.find('img', {"data-placeholder": "placeholder.jpg"})['src']
+				
+					#parse price
+					price = product_price_obj.text.strip()
+					#use regular expression to replace VND and dot symbol
+					price = re.sub('\s+VND|\.', '', price)
+				
+					product_data = {
+						'product_id' : int(product_id),
+						'name'  : product_name,
+						'image' : product_image,
+						'price' : price,
+						'url'   : url
+					}
+				
+					#insert data to mongo
+					self.mongo_collection.update({'product_id': int(product_id)}, product_data, upsert = True)
+		except Exception as e:
+			#log info here
+			#@TODO: send mail notify
+			print str(e.args)
+			pass

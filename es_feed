@@ -1,19 +1,46 @@
-curl -XPUT 'http://localhost:9200/_river/lazada/_meta' -d '{ 
+curl -XPUT 'http://localhost:9200/_river/nguyenkim/_meta' -d '{ 
     "type": "mongodb", 
     "mongodb": {
       "servers":
       [
-        { "host": "23.92.53.164", "port": 27017 }
+        { "host": "108.61.217.153", "port": 27017 }
       ],
       "db": "product", 
-      "collection": "lazada_product"
+      "collection": "nguyenkim_product"
     }, 
     "index": {
-      "name": "pd", 
-      "type": "lazada" 
+      "name": "nguyenkim", 
+      "type": "pd",
+      "throttle_size": 3600
     }
   }'
 
   web: 108.61.217.153
 
   crawl: 23.92.53.164
+
+  CREATE ANALYZER SUPPORT ASCII CHARACTER
+
+  curl -XPUT http://localhost:9200/nguyenkim/ -d '
+{
+    "settings": {
+        "analysis": {
+            "analyzer": {
+                "my_analyzer": {
+                    "tokenizer": "standard",
+                    "filter": ["standard", "lowercase", "asciifolding"]
+                }
+            }
+        }
+    }
+}'
+
+curl -XPUT 'http://localhost:9200/nguyenkim/pd/_mapping' -d '
+{
+    "properties": {
+        "name": {
+          "type": "string",
+          "analyzer": "my_analyzer"
+        }
+    }
+}'

@@ -24,12 +24,12 @@ def renew_connection():
 	try:
 		threading.Lock().acquire()
 	 	conn = TorCtl.connect(controlAddr="127.0.0.1", controlPort=9051, passphrase="Camicyoab")
-    		conn.send_signal("NEWNYM")
-    		conn.close()
-    	except:
-    		sys.exit()
-    	else:
-    		threading.Lock().release()
+		conn.send_signal("NEWNYM")
+		conn.close()
+	except:
+		sys.exit()
+	else:
+		threading.Lock().release()
     		
 
 def request_to_url(url):
@@ -55,7 +55,7 @@ def get_html_from_url(url, use_tor):
 				#print str(e.args)
 				if use_tor:
 					renew_connection()
-                		pass
+        		pass
 	else:
 		print "No url specified!!!"
 	return html
