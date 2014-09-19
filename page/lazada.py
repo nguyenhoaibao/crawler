@@ -73,8 +73,6 @@ class Lazada(Crawl):
 			#remove url from redis sets
 			self.redis_conn.srem(REDIS_URLS, url)
 
-			url = 'http://www.lazada.vn/samsung-galaxy-v-ips-4-30-mp-4-gb-trang-222182.html'
-
 			try:
 				print "Crawling url %s ..." % url
 				self.parse_url(url)
