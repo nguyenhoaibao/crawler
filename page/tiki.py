@@ -132,4 +132,6 @@ class Tiki(Crawl):
 		except Exception as e:
 			#log info here
 			#@TODO: send mail notify
+			with open('fail.txt', 'a') as file_:
+				file_.write('Cannot parse data from tiki. Error: ' + str(e.args))
 			pass

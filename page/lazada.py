@@ -7,7 +7,7 @@ from background import tasks
 
 INIT_URL = 'http://www.lazada.vn'
 SKIP_URL = '\#|\\|about|privacy|cart|customer|urlall|mobile|javascript|shipping|\.php|contact|huong\-dan|trung\-tam|faq'
-THREAD_NUM = 10
+THREAD_NUM = 1
 REDIS_URLS = 'lazada_urls'
 USE_TOR = False
 
@@ -67,7 +67,7 @@ class Lazada(Crawl):
 			t.start()
 
 	def start_crawl(self):
-		while not self.queue.empty():
+		#while not self.queue.empty():
 			url = self.queue.get()
 
 			#remove url from redis sets
@@ -88,21 +88,21 @@ class Lazada(Crawl):
 			if html:
 				parsed_html = BeautifulSoup(html, 'html5lib')
 
-				product_price_obj = parsed_html.body.find('span', {'class' : 'product-price'})
+				product_name_obj = parsed_html.body.find('h1', {'id' : 'prod_title'})
 
-				if product_price_obj:
+				if product_name_obj:
 
 					#get product id
 					product_id = re.search(r'(\d+)\.html$', url).group(1)
 						
 					#parse product name
-					product_name = parsed_html.body.findAll('span', {'class' : 'product-name'})[0].text.strip()
+					product_name = product_name_obj.text.strip()
 
 					#parse image
-					product_image = parsed_html.body.find('img', {"data-placeholder": "placeholder.jpg"})['src']
+					product_image = parsed_html.body.findAll('span', {"class": "productImage"})[0]['data-image']
 				
 					#parse price
-					price = product_price_obj.text.strip()
+					price = parsed_html.body.find('span', {'id': 'product_price'}).text.strip()
 					#use regular expression to replace VND and dot symbol
 					price = re.sub('\s+VND|\.', '', price)
 				
@@ -119,5 +119,6 @@ class Lazada(Crawl):
 		except Exception as e:
 			#log info here
 			#@TODO: send mail notify
-			print str(e.args)
+			with open('fail.txt', 'a') as file_:
+				file_.write('Cannot parse data from lazada. Error: ' + str(e.args))
 			pass
