@@ -5,18 +5,18 @@ import request_url
 from crawl import Crawl
 from background import tasks
 
-INIT_URL = 'http://tiki.vn'
-SKIP_URL = '\#|\\|customer|order\-history|about|tuyen\-dung|faq|tin\-tham\-khao|checkout|market\-place|sgdtmdt|thuong\-hieu'
+INIT_URL = 'http://www.cdiscount.vn'
+SKIP_URL = '\#|\\|huong\-dan\-mua\-hang|checkout|customer'
 THREAD_NUM = 10
-REDIS_URLS = 'tiki_urls'
-USE_TOR = True
+REDIS_URLS = 'cdiscount_urls'
+USE_TOR = False
 
-class Tiki(Crawl):
-	"""docstring for Tiki"""
+class Cdiscount(Crawl):
+	"""docstring for Cdiscount"""
 	def __init__(self):
 		Crawl.__init__(self, INIT_URL, SKIP_URL, USE_TOR)
 		#select collection
-		self.mongo_collection = self.mongo_conn['tiki_product']
+		self.mongo_collection = self.mongo_conn['cdiscount_product']
 
 	def parse_url(self, url):
 		try:
@@ -28,14 +28,14 @@ class Tiki(Crawl):
 				#put to queue
 				self.queue.put(url)
 	                
-			m = re.match(".*p\d+\.html", temp)
+			m = re.match(".*\.html$", temp)
 			
 			#with open('Failed.py', 'w') as file_:
 				#file_.write(html.encode('utf-8'))
 			#return
 	                
 			if m:  #product url
-				tasks.parse_product_html.delay('tiki', temp)
+				tasks.parse_product_html.delay('cdiscount', temp)
 		except Exception, e:
 			print url, str(e.args)
 			pass
@@ -93,9 +93,12 @@ class Tiki(Crawl):
 			if html:
 
 				parsed_html = BeautifulSoup(html.encode('utf-8'))
+				
+				#with open('Failed.py', 'w') as file_:
+				    #file_.write(html.encode('utf-8'))
 
 				#parse product name
-				product_obj = parsed_html.body.find('h1', {'class' : 'item-name'})
+				product_obj = parsed_html.body.find('h1', attrs={'itemprop': 'name'})
 
 				if product_obj:
 
@@ -103,14 +106,18 @@ class Tiki(Crawl):
 					product_name = product_obj.text.strip()
 					
 					#get product id
-					product_id = re.search(r'.*p(\d+)\.html', url).group(1)
+					product_id = parsed_html.body.find('select', {'id': 'estimated-time-select'})['data-pid']
 					
 					#parse image
-					product_image = parsed_html.body.find('img', attrs={'itemprop': 'image'})['src']
+					product_image = parsed_html.body.find('a', {'id': 'zoom1'}).find('img')['src']
 				
 					#parse price
-					price = parsed_html.body.find('span', attrs={'itemprop': 'price'}).text.strip()
-					price = u'%s' % price
+					price = parsed_html.body.findAll('span', attrs={'class': 'price', 'id': re.compile(r".*")})
+					if len(price) == 2:
+						price = u'%s' % price[1].text.strip()
+					else:
+						price = u'%s' % price[0].text.strip()
+					
 					price = price.encode("ascii", "ignore")
 
 					#use regular expression to replace VND and dot symbol
@@ -130,5 +137,5 @@ class Tiki(Crawl):
 			#log info here
 			#@TODO: send mail notify
 			with open('fail.txt', 'a') as file_:
-				file_.write('Cannot parse data from tiki. Error: ' + str(e.args))
+				file_.write('Cannot parse data from cdiscount. Error: ' + str(e.args))
 			pass

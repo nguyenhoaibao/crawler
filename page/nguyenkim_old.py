@@ -5,18 +5,18 @@ import request_url
 from crawl import Crawl
 from background import tasks
 
-INIT_URL = 'http://tiki.vn'
-SKIP_URL = '\#|\\|customer|order\-history|about|tuyen\-dung|faq|tin\-tham\-khao|checkout|market\-place|sgdtmdt|thuong\-hieu'
+INIT_URL = 'http://www.nguyenkim.com'
+SKIP_URL = '\#|\\|trung\-tam|gioi\-thieu|tieu\-chi|lien\-he|giai\-thuong|bao\-mat|dang\-ky|gio\-hang|\.php|khach\-hang'
 THREAD_NUM = 10
-REDIS_URLS = 'tiki_urls'
-USE_TOR = True
+REDIS_URLS = 'nguyenkim_urls'
+USE_TOR = False
 
-class Tiki(Crawl):
-	"""docstring for Tiki"""
+class Nguyenkim(Crawl):
+	"""docstring for Nguyenkim"""
 	def __init__(self):
 		Crawl.__init__(self, INIT_URL, SKIP_URL, USE_TOR)
 		#select collection
-		self.mongo_collection = self.mongo_conn['tiki_product']
+		self.mongo_collection = self.mongo_conn['nguyenkim_product']
 
 	def parse_url(self, url):
 		try:
@@ -28,17 +28,15 @@ class Tiki(Crawl):
 				#put to queue
 				self.queue.put(url)
 	                
-			m = re.match(".*p\d+\.html", temp)
+			m = re.match(".*\.html$", temp)
 			
 			#with open('Failed.py', 'w') as file_:
 				#file_.write(html.encode('utf-8'))
 			#return
-	                
-			if m:  #product url
-				tasks.parse_product_html.delay('tiki', temp)
+			if m:
+				tasks.parse_product_html.delay('nguyenkim', temp)
 		except Exception, e:
 			print url, str(e.args)
-			pass
 	
 	def crawl(self):
 
@@ -91,33 +89,33 @@ class Tiki(Crawl):
 			html = request_url.get_html_from_url(url, USE_TOR)
 
 			if html:
-
 				parsed_html = BeautifulSoup(html.encode('utf-8'))
 
+				#with open('Failed.py', 'w') as file_:
+				    #file_.write(html.encode('utf-8'))
+
 				#parse product name
-				product_obj = parsed_html.body.find('h1', {'class' : 'item-name'})
+				product_obj = parsed_html.body.find('h1', {'class' : 'block_product-title'})
 
 				if product_obj:
 
 					#product name
 					product_name = product_obj.text.strip()
-					
+
 					#get product id
-					product_id = re.search(r'.*p(\d+)\.html', url).group(1)
+					product_id = parsed_html.body.find('span', attrs={'id': re.compile(r"product_code.*")}).text.strip()
 					
 					#parse image
-					product_image = parsed_html.body.find('img', attrs={'itemprop': 'image'})['src']
+					product_image = parsed_html.body.find('img', {"class": "pict"})['src']
 				
 					#parse price
-					price = parsed_html.body.find('span', attrs={'itemprop': 'price'}).text.strip()
-					price = u'%s' % price
-					price = price.encode("ascii", "ignore")
-
+					price = parsed_html.body.findAll('span', {'class' : 'price-num'})[0].text.strip()
 					#use regular expression to replace VND and dot symbol
-					price = re.sub('\.', '', price)
+					price = re.sub('\s+VND|\.', '', price)
+
 				
 					product_data = {
-						'product_id' : int(product_id),
+						'product_id' : product_id,
 						'name'  : product_name,
 						'image' : product_image,
 						'price' : price,
@@ -125,10 +123,10 @@ class Tiki(Crawl):
 					}
 				
 					#insert data to mongo
-					self.mongo_collection.update({'product_id': int(product_id)}, product_data, upsert = True)
+					self.mongo_collection.update({'product_id': product_id}, product_data, upsert = True)
 		except Exception as e:
 			#log info here
 			#@TODO: send mail notify
 			with open('fail.txt', 'a') as file_:
-				file_.write('Cannot parse data from tiki. Error: ' + str(e.args))
+				file_.write('Cannot parse data from nguyenkim. Error: ' + str(e.args))
 			pass

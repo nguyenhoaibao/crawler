@@ -24,8 +24,9 @@ class Crawl():
 		try:
 			urls = ''
 			list_urls = []
+			i = 0
 
-			while not urls:
+			while not urls:	#try to request 3 times
 				html = request_url.get_html_from_url(url, self.use_tor)
 
 				if html:
@@ -55,8 +56,9 @@ class Crawl():
 								href = re.sub(r'\?.*$', '', href)
 
 								list_urls.append(href)
-						return list_urls
-					else:
+					if self.use_tor:
 						request_url.renew_connection()
+					else:
+						return list_urls
 		except Exception, e:
 			print url, str(e.args)

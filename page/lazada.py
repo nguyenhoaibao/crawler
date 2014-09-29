@@ -6,9 +6,11 @@ from crawl import Crawl
 from background import tasks
 
 INIT_URL = 'http://www.lazada.vn'
-SKIP_URL = '\#|\\|about|privacy|cart|customer|urlall|mobile|javascript|shipping|\.php|contact|huong\-dan|trung\-tam|faq'
-THREAD_NUM = 1
-REDIS_URLS = 'lazada_urls'
+SKIP_URL = '\#|\\|urlall|mobile|javascript|shipping|\.php|contact|faq'
+THREAD_NUM = 10
+REDIS_CRAWLING_URLS = 'lazada_urls'
+REDIS_CRAWLED_URLS = 'lazada_crawled_urls'
+REDIS_PRODUCT_URLS = 'lazada_product_urls'
 USE_TOR = False
 
 class Lazada(Crawl):
@@ -18,67 +20,91 @@ class Lazada(Crawl):
 		#select collection
 		self.mongo_collection = self.mongo_conn['lazada_product']
 
-	def parse_url(self, url):
+	def process_crawling_queue(self, url):
 		try:
 			temp = url
 			urls = self.find_all_link_from_url(url)
-			for url in urls:
-				self.redis_conn.sadd(REDIS_URLS, url)
+			if urls:
+				for url in urls:
+					if self.redis_conn.sismember(REDIS_CRAWLED_URLS, url) or self.redis_conn.sismember(REDIS_PRODUCT_URLS, url):
+						continue
 
-				#put to queue
-				self.queue.put(url)
+					#put to crawling queue
+					self.redis_conn.sadd(REDIS_CRAWLING_URLS, url)
+
+					#put to queue
+					self.queue.put(url)
 	                
-			m = re.match(".*(\d+)\.html$", temp)
-	                
-			if m:  #product url
-				tasks.parse_product_html.delay('lazada', temp)
+			if re.search(".*(\d+)\.html$", temp):  #product url
+				if not self.redis_conn.sismember(REDIS_PRODUCT_URLS, temp):
+					#save product url to redis
+					#use to set cron to update these product urls
+					self.redis_conn.sadd(REDIS_PRODUCT_URLS, temp)
+					#push to background job to parse
+					tasks.parse_product_html.delay('lazada', temp)
+			else:
+				self.redis_conn.srem(REDIS_CRAWLING_URLS, temp)
+				self.redis_conn.sadd(REDIS_CRAWLED_URLS, temp)
 		except Exception, e:
-			print url, str(e.args)
+			pass
+
+	def process_crawled_queue(self, url):
+		try:
+			urls = self.find_all_link_from_url(url)
+			if urls:
+				for url in urls:
+					if re.search(".*(\d+)\.html$", url) and not self.redis_conn.sismember(REDIS_PRODUCT_URLS, url):
+						#save product url to redis
+						#use to set cron to update these product urls
+						self.redis_conn.sadd(REDIS_PRODUCT_URLS, url)
+						#push to background job to parse
+						tasks.parse_product_html.delay('lazada', url)
+					elif not self.redis_conn.sismember(REDIS_CRAWLED_URLS, url):
+						self.redis_conn.sadd(REDIS_CRAWLING_URLS, url)
+		except Exception, e:
+			pass
 	
 	def crawl(self):
+		#get crawling urls
+		crawling_urls = self.redis_conn.smembers(REDIS_CRAWLING_URLS)
+		#get crawled urls
+		crawled_urls = self.redis_conn.smembers(REDIS_CRAWLED_URLS)
 
-		urls = self.redis_conn.smembers(REDIS_URLS)
-		
-		#first crawl
-		if not urls:
-			print "No url found from redis!!!"
-			print "Find url from init url: %s" % INIT_URL
-			#get list url from init url
+		if not crawling_urls and not crawled_urls:
 			urls = self.find_all_link_from_url(INIT_URL)
-
-	                print "Find %s urls ..." % len(urls)
-			
-			for url in urls:
-				#insert all url to redis sets
-				self.redis_conn.sadd(REDIS_URLS, url)
-		
-		#continue
-		for url in urls:
-			#put to queue
-			self.queue.put(url)
-
-	        print "Begin to crawl ..."
+			if urls:
+				for url in urls:
+					self.redis_conn.sadd(REDIS_CRAWLING_URLS, url)
 
 		#init threads
 		for t in xrange(THREAD_NUM):
-			print "Init thread %s ..." % t
+			#print "Init thread %s ..." % t
 			t = threading.Thread(target=self.start_crawl)
 			#t.setDaemon(True)
 			t.start()
 
 	def start_crawl(self):
-		#while not self.queue.empty():
-			url = self.queue.get()
-
-			#remove url from redis sets
-			self.redis_conn.srem(REDIS_URLS, url)
-
-			try:
-				print "Crawling url %s ..." % url
-				self.parse_url(url)
-			except Exception, e:
-				print "Pass url: %s" % url
-				pass
+		while True:
+			#get crawling urls
+			crawling_urls = self.redis_conn.smembers(REDIS_CRAWLING_URLS)
+			
+			if crawling_urls:
+				for url in crawling_urls:
+					self.queue.put(url)
+				while not self.queue.empty():
+					url = self.queue.get()
+					if self.redis_conn.sismember(REDIS_CRAWLED_URLS, url) or self.redis_conn.sismember(REDIS_PRODUCT_URLS, url):
+						continue
+					self.process_crawling_queue(url)
+			
+			#get crawled urls
+			crawled_urls = self.redis_conn.smembers(REDIS_CRAWLED_URLS)
+			if crawled_urls:
+				for url in crawled_urls:
+					self.queue.put(url)
+				while not self.queue.empty():
+					url = self.queue.get()
+					self.process_crawled_queue(url)
 
 	def parse_product_data(self, url):
 		try:
@@ -103,8 +129,9 @@ class Lazada(Crawl):
 				
 					#parse price
 					price = parsed_html.body.find('span', {'id': 'product_price'}).text.strip()
+					
 					#use regular expression to replace VND and dot symbol
-					price = re.sub('\s+VND|\.', '', price)
+					price = re.sub('\s+VND|\.\d+$', '', price)
 				
 					product_data = {
 						'product_id' : int(product_id),

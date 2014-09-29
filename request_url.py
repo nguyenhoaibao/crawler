@@ -2,7 +2,7 @@ import requests, requesocks, re, threading, sys
 from TorCtl import TorCtl
 
 session = ''
-TIMEOUT = 48
+TIMEOUT = 12
 
 def init_tor_session():
 	global session
@@ -46,16 +46,18 @@ def get_html_from_url(url, use_tor):
 	if url:
 		if use_tor:
 			init_tor_session()
+			while not html:	#retry 3 times
+				try:
+					html = request_to_url(url)
+					return html
+				except:
+					renew_connection()
 		else:
 			init()
-		while not html:
 			try:
 				html = request_to_url(url)
 			except Exception as e:
-				#print str(e.args)
-				if use_tor:
-					renew_connection()
-        		pass
+				pass
 	else:
 		print "No url specified!!!"
 	return html
