@@ -46,18 +46,20 @@ def get_html_from_url(url, use_tor):
 	if url:
 		if use_tor:
 			init_tor_session()
-			while not html:	#retry 3 times
+			i = 0
+			while i < 3:	#retry 3 times
 				try:
 					html = request_to_url(url)
 					return html
 				except:
+					#try to change ip
 					renew_connection()
+					i += 1
 		else:
 			init()
 			try:
 				html = request_to_url(url)
 			except Exception as e:
 				pass
-	else:
-		print "No url specified!!!"
+	
 	return html

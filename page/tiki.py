@@ -1,89 +1,40 @@
-import threading, re
+import multiprocessing, re
 from bs4 import BeautifulSoup
 
 import request_url
 from crawl import Crawl
-from background import tasks
 
+SITE_NAME = 'tiki'
 INIT_URL = 'http://tiki.vn'
 SKIP_URL = '\#|\\|customer|order\-history|about|tuyen\-dung|faq|tin\-tham\-khao|checkout|market\-place|sgdtmdt|thuong\-hieu'
-THREAD_NUM = 10
-REDIS_URLS = 'tiki_urls'
+
+REDIS_CRAWLING_URLS = 'tiki_urls'
+REDIS_CRAWLED_URLS = 'tiki_crawled_urls'
+REDIS_PRODUCT_URLS = 'tiki_product_urls'
+
+PRODUCT_PATTERN = ".*p\d+\.html"
+
+PROCESS_NUM = 4
+
 USE_TOR = True
 
 class Tiki(Crawl):
 	"""docstring for Tiki"""
 	def __init__(self):
-		Crawl.__init__(self, INIT_URL, SKIP_URL, USE_TOR)
+		init_params = {
+			'site_name' : SITE_NAME,
+			'init_url'  : INIT_URL,
+			'skip_url'  : SKIP_URL,
+			'redis_crawling_urls' : REDIS_CRAWLING_URLS,
+			'redis_crawled_urls' : REDIS_CRAWLED_URLS,
+			'redis_product_urls' : REDIS_PRODUCT_URLS,
+			'product_pattern' : PRODUCT_PATTERN,
+			'process_num' : PROCESS_NUM,
+			'use_tor' : USE_TOR
+		}
+		Crawl.__init__(self, **init_params)
 		#select collection
 		self.mongo_collection = self.mongo_conn['tiki_product']
-
-	def parse_url(self, url):
-		try:
-			temp = url
-			urls = self.find_all_link_from_url(url)
-			for url in urls:
-				self.redis_conn.sadd(REDIS_URLS, url)
-
-				#put to queue
-				self.queue.put(url)
-	                
-			m = re.match(".*p\d+\.html", temp)
-			
-			#with open('Failed.py', 'w') as file_:
-				#file_.write(html.encode('utf-8'))
-			#return
-	                
-			if m:  #product url
-				tasks.parse_product_html.delay('tiki', temp)
-		except Exception, e:
-			print url, str(e.args)
-			pass
-	
-	def crawl(self):
-
-		urls = self.redis_conn.smembers(REDIS_URLS)
-		
-		#first crawl
-		if not urls:
-			print "No url found from redis!!!"
-			print "Find url from init url: %s" % INIT_URL
-			#get list url from init url
-			urls = self.find_all_link_from_url(INIT_URL)
-
-	                print "Find %s urls ..." % len(urls)
-			
-			for url in urls:
-				#insert all url to redis sets
-				self.redis_conn.sadd(REDIS_URLS, url)
-		
-		#continue
-		for url in urls:
-			#put to queue
-			self.queue.put(url)
-
-	        print "Begin to crawl ..."
-
-		#init threads
-		for t in xrange(THREAD_NUM):
-			print "Init thread %s ..." % t
-			t = threading.Thread(target=self.start_crawl)
-			#t.setDaemon(True)
-			t.start()
-
-	def start_crawl(self):
-		while not self.queue.empty():
-			url = self.queue.get()
-
-			#remove url from redis sets
-			self.redis_conn.srem(REDIS_URLS, url)
-
-			try:
-				print "Crawling url %s ..." % url
-				self.parse_url(url)
-			except Exception, e:
-				print "Pass url: %s" % url
-				pass
 
 	def parse_product_data(self, url):
 		try:
@@ -132,3 +83,8 @@ class Tiki(Crawl):
 			with open('fail.txt', 'a') as file_:
 				file_.write('Cannot parse data from tiki. Error: ' + str(e.args))
 			pass
+
+	def feedproducturl(self):
+		for data in self.mongo_collection.find():
+			url = data.get('url')
+			self.redis_conn.sadd(self.redis_product_urls, url)

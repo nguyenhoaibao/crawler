@@ -1,110 +1,40 @@
-import threading, re
+import multiprocessing, re
 from bs4 import BeautifulSoup
 
 import request_url
 from crawl import Crawl
-from background import tasks
 
+SITE_NAME = 'lazada'
 INIT_URL = 'http://www.lazada.vn'
 SKIP_URL = '\#|\\|urlall|mobile|javascript|shipping|\.php|contact|faq'
-THREAD_NUM = 10
+
 REDIS_CRAWLING_URLS = 'lazada_urls'
 REDIS_CRAWLED_URLS = 'lazada_crawled_urls'
 REDIS_PRODUCT_URLS = 'lazada_product_urls'
+
+PRODUCT_PATTERN = '.*(\d+)\.html$'
+
+PROCESS_NUM = 4
+
 USE_TOR = False
 
 class Lazada(Crawl):
 	"""docstring for Lazada"""
 	def __init__(self):
-		Crawl.__init__(self, INIT_URL, SKIP_URL, USE_TOR)
+		init_params = {
+			'site_name' : SITE_NAME,
+			'init_url'  : INIT_URL,
+			'skip_url'  : SKIP_URL,
+			'redis_crawling_urls' : REDIS_CRAWLING_URLS,
+			'redis_crawled_urls' : REDIS_CRAWLED_URLS,
+			'redis_product_urls' : REDIS_PRODUCT_URLS,
+			'product_pattern' : PRODUCT_PATTERN,
+			'process_num' : PROCESS_NUM,
+			'use_tor' : USE_TOR
+		}
+		Crawl.__init__(self, **init_params)
 		#select collection
-		self.mongo_collection = self.mongo_conn['lazada_product']
-
-	def process_crawling_queue(self, url):
-		try:
-			temp = url
-			urls = self.find_all_link_from_url(url)
-			if urls:
-				for url in urls:
-					if self.redis_conn.sismember(REDIS_CRAWLED_URLS, url) or self.redis_conn.sismember(REDIS_PRODUCT_URLS, url):
-						continue
-
-					#put to crawling queue
-					self.redis_conn.sadd(REDIS_CRAWLING_URLS, url)
-
-					#put to queue
-					self.queue.put(url)
-	                
-			if re.search(".*(\d+)\.html$", temp):  #product url
-				if not self.redis_conn.sismember(REDIS_PRODUCT_URLS, temp):
-					#save product url to redis
-					#use to set cron to update these product urls
-					self.redis_conn.sadd(REDIS_PRODUCT_URLS, temp)
-					#push to background job to parse
-					tasks.parse_product_html.delay('lazada', temp)
-			else:
-				self.redis_conn.srem(REDIS_CRAWLING_URLS, temp)
-				self.redis_conn.sadd(REDIS_CRAWLED_URLS, temp)
-		except Exception, e:
-			pass
-
-	def process_crawled_queue(self, url):
-		try:
-			urls = self.find_all_link_from_url(url)
-			if urls:
-				for url in urls:
-					if re.search(".*(\d+)\.html$", url) and not self.redis_conn.sismember(REDIS_PRODUCT_URLS, url):
-						#save product url to redis
-						#use to set cron to update these product urls
-						self.redis_conn.sadd(REDIS_PRODUCT_URLS, url)
-						#push to background job to parse
-						tasks.parse_product_html.delay('lazada', url)
-					elif not self.redis_conn.sismember(REDIS_CRAWLED_URLS, url):
-						self.redis_conn.sadd(REDIS_CRAWLING_URLS, url)
-		except Exception, e:
-			pass
-	
-	def crawl(self):
-		#get crawling urls
-		crawling_urls = self.redis_conn.smembers(REDIS_CRAWLING_URLS)
-		#get crawled urls
-		crawled_urls = self.redis_conn.smembers(REDIS_CRAWLED_URLS)
-
-		if not crawling_urls and not crawled_urls:
-			urls = self.find_all_link_from_url(INIT_URL)
-			if urls:
-				for url in urls:
-					self.redis_conn.sadd(REDIS_CRAWLING_URLS, url)
-
-		#init threads
-		for t in xrange(THREAD_NUM):
-			#print "Init thread %s ..." % t
-			t = threading.Thread(target=self.start_crawl)
-			#t.setDaemon(True)
-			t.start()
-
-	def start_crawl(self):
-		while True:
-			#get crawling urls
-			crawling_urls = self.redis_conn.smembers(REDIS_CRAWLING_URLS)
-			
-			if crawling_urls:
-				for url in crawling_urls:
-					self.queue.put(url)
-				while not self.queue.empty():
-					url = self.queue.get()
-					if self.redis_conn.sismember(REDIS_CRAWLED_URLS, url) or self.redis_conn.sismember(REDIS_PRODUCT_URLS, url):
-						continue
-					self.process_crawling_queue(url)
-			
-			#get crawled urls
-			crawled_urls = self.redis_conn.smembers(REDIS_CRAWLED_URLS)
-			if crawled_urls:
-				for url in crawled_urls:
-					self.queue.put(url)
-				while not self.queue.empty():
-					url = self.queue.get()
-					self.process_crawled_queue(url)
+		self.mongo_collection = self.mongo_conn['lazada_product']		
 
 	def parse_product_data(self, url):
 		try:
@@ -149,3 +79,8 @@ class Lazada(Crawl):
 			with open('fail.txt', 'a') as file_:
 				file_.write('Cannot parse data from lazada. Error: ' + str(e.args))
 			pass
+
+	def feedproducturl(self):
+		for data in self.mongo_collection.find():
+			url = data.get('url')
+			self.redis_conn.sadd(self.redis_product_urls, url)
