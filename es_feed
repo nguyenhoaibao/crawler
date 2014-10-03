@@ -1,4 +1,4 @@
-curl -XPUT 'http://localhost:9200/_river/nguyenkim/_meta' -d '{ 
+curl -XPUT 'http://localhost:9216/_river/nguyenkim/_meta' -d '{ 
     "type": "mongodb", 
     "mongodb": {
       "servers":
@@ -16,47 +16,79 @@ curl -XPUT 'http://localhost:9200/_river/nguyenkim/_meta' -d '{
     }
   }'
 
-  web: 108.61.217.153
+curl -XPUT 'http://localhost:9216/_river/tiki/_meta' -d '{ 
+    "type": "mongodb", 
+    "mongodb": {
+      "db": "product", 
+      "collection": "tiki_product",
+      "script": "ctx.document.name_suggest = ctx.document.name;"
+    }, 
+    "index": {
+      "name": "tiki", 
+      "type": "pd",
+      "throttle_size": 3600
+    }
+  }'
+
+  web: 128.199.164.210
 
   crawl: 23.92.53.164
 
   CREATE ANALYZER SUPPORT ASCII CHARACTER
 
-  curl -XPUT http://localhost:9200/nguyenkim/ -d '
-{
+  curl -XPUT http://localhost:9216/tiki/ -d '
+  {
     "settings": {
-        "analysis": {
-            "analyzer": {
-                "my_analyzer": {
-                    "tokenizer": "standard",
-                    "filter": ["standard", "lowercase", "asciifolding"]
-                }
+      "analysis": {
+          "filter": {
+            "nGram_filter": {
+               "type": "nGram",
+               "min_gram": 2,
+               "max_gram": 20,
+               "token_chars": [
+                  "letter",
+                  "digit",
+                  "punctuation",
+                  "symbol"
+               ]
+            }
+         },
+        "analyzer": {
+            "suggest_analyzer": {
+                "tokenizer": "whitespace",
+                "filter": ["lowercase", "asciifolding", "nGram_filter"]
+            },
+            "search_analyzer": {
+                "tokenizer": "standard",
+                "filter": ["standard", "lowercase", "asciifolding"]
             }
         }
+      }
     }
-}'
+  }'
 
-curl -XPUT 'http://localhost:9200/nguyenkim/pd/_mapping' -d '
+curl -XPUT 'http://localhost:9216/tiki/pd/_mapping' -d '
 {
     "properties": {
         "id": {
           type: "string",
-           index: "not_analyzed"
+           index: "no"
         },
         "image": {
           type: "string",
-          index: "not_analyzed"
+          index: "no"
         },
         "url": {
           type: "string",
-          index: "not_analyzed"
+          index: "no"
         },
         "name": {
           "type": "string",
-          "analyzer": "my_analyzer"
+          "analyzer": "search_analyzer"
         },
         "name_suggest" : {
-          "type" : "completion"
+          "type" : "string",
+          "analyzer": "suggest_analyzer"
         }
     }
 }'

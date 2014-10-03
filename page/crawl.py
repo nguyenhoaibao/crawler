@@ -1,4 +1,4 @@
-import multiprocessing, re
+import multiprocessing, re, time
 from bs4 import BeautifulSoup
 
 #custom module
@@ -57,6 +57,8 @@ class Crawl():
 			while self.redis_conn.scard(self.redis_crawled_urls):
 				url = self.redis_conn.spop(self.redis_crawled_urls)
 				self.process_crawled_queue(url)
+
+			time.sleep(60)
 
 	def process_crawling_queue(self, url):
 		try:
