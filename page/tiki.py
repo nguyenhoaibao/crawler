@@ -14,7 +14,7 @@ REDIS_PRODUCT_URLS = 'tiki_product_urls'
 
 PRODUCT_PATTERN = ".*p\d+\.html"
 
-PROCESS_NUM = 4
+PROCESS_NUM = 2
 
 USE_TOR = True
 

@@ -14,7 +14,7 @@ REDIS_PRODUCT_URLS = 'cdiscount_product_urls'
 
 PRODUCT_PATTERN = '.*\.html$'
 
-PROCESS_NUM = 4
+PROCESS_NUM = 2
 
 USE_TOR = False
 
