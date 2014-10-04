@@ -47,7 +47,7 @@ class Crawl():
 			t.start()
 
 	def start_crawl(self):
-		while True:
+		while self.redis_conn.scard(self.redis_crawling_urls) or self.redis_conn.scard(self.redis_crawled_urls):
 			while self.redis_conn.scard(self.redis_crawling_urls):
 				url = self.redis_conn.spop(self.redis_crawling_urls)
 				if self.redis_conn.sismember(self.redis_crawled_urls, url) or self.redis_conn.sismember(self.redis_product_urls, url):
@@ -58,7 +58,7 @@ class Crawl():
 				url = self.redis_conn.spop(self.redis_crawled_urls)
 				self.process_crawled_queue(url)
 
-			time.sleep(60)
+			time.sleep(120)
 
 	def process_crawling_queue(self, url):
 		try:
