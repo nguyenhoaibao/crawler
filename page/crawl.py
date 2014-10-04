@@ -218,5 +218,5 @@ class Crawl():
 			for url in urls:
 				tasks.parse_product_html.delay(self.site_name, url)
 			with open('cron.txt', 'a') as file_:
-				file_.write('%s Update all product of site %s' % (str(strftime("%Y-%m-%d %H:%M:%S")), self.site_name)
+				file_.write("%s Update all product of site %s" % (str(strftime("%Y-%m-%d %H:%M:%S")), self.site_name))
 			pass
