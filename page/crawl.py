@@ -44,7 +44,7 @@ class Crawl():
 		#init threads
 		for t in xrange(self.process_num):
 			t = multiprocessing.Process(target=self.start_crawl)
-			t.daemon = True
+			#t.daemon = True
 			t.start()
 
 	def start_crawl(self):
