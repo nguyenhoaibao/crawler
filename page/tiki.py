@@ -16,7 +16,7 @@ PRODUCT_PATTERN = ".*p\d+\.html"
 
 PROCESS_NUM = 2
 
-USE_TOR = True
+USE_TOR = False
 
 class Tiki(Crawl):
 	"""docstring for Tiki"""
