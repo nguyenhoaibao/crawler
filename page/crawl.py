@@ -1,5 +1,6 @@
 import multiprocessing, re, time
 from bs4 import BeautifulSoup
+from time import strftime
 
 #custom module
 import db.factory, request_url
@@ -75,6 +76,8 @@ class Crawl():
 					self.redis_conn.sadd(self.redis_crawling_urls, url)
 	                
 			if re.search(self.product_pattern, temp):  #product url
+				#remove everything after ? symbol
+				temp = re.sub(r'\?.*$', '', temp)
 				if not self.redis_conn.sismember(self.redis_product_urls, temp):
 					#save product url to redis
 					#use to set cron to update these product urls
@@ -94,6 +97,8 @@ class Crawl():
 			if urls:
 				for url in urls:
 					if re.search(self.product_pattern, url) and not self.redis_conn.sismember(self.redis_product_urls, url):
+						#remove every thing after ? symbol
+						url = re.sub(r'\?.*$', '', url)
 						#save product url to redis
 						#use to set cron to update these product urls
 						self.redis_conn.sadd(self.redis_product_urls, url)
@@ -208,6 +213,10 @@ class Crawl():
 		return self.find_all_link_from_url_without_tor(url)
 
 	def update(self):
-		while self.redis_conn.scard(self.redis_product_urls):
-			url = self.redis_conn.spop(self.redis_product_urls)
-			tasks.parse_product_html.delay(self.site_name, url)
+		urls = self.redis_conn.smembers(self.redis_product_urls)
+		if urls:
+			for url in urls:
+				tasks.parse_product_html.delay(self.site_name, url)
+			with open('cron.txt', 'a') as file_:
+				file_.write('%s Update all product of site %s' % (str(strftime("%Y-%m-%d %H:%M:%S")), self.site_name)
+			pass

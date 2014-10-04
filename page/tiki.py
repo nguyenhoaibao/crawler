@@ -87,4 +87,5 @@ class Tiki(Crawl):
 	def feedproducturl(self):
 		for data in self.mongo_collection.find():
 			url = data.get('url')
+			url = re.sub(r'\?.*$', '', url)
 			self.redis_conn.sadd(self.redis_product_urls, url)
