@@ -6,7 +6,7 @@ from crawl import Crawl
 
 SITE_NAME = 'lazada'
 INIT_URL = 'http://www.lazada.vn'
-SKIP_URL = '\#|\\|urlall|mobile|javascript|shipping|\.php|contact|faq'
+SKIP_URL = '\#|\\|urlall|mobile|shipping|\.php|contact|faq|chinh\-sach\-doi\-tra\-hang|about|huong\-dan|marketplace|privacy|terms\-of\-use|career|kiem\-tra\-don\-hang'
 
 REDIS_CRAWLING_URLS = 'lazada_urls'
 REDIS_CRAWLED_URLS = 'lazada_crawled_urls'

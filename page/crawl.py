@@ -148,9 +148,15 @@ class Crawl():
 									continue
 								
 								if self.site_name == 'tiki':
-									href = re.sub(r'(.*)\?.*(p=\d+).*', r'\1?\2', href)
+									if re.search('p=\d+', href):
+										href = re.sub(r'(.*)\?.*(p=\d+)?.*', r'\1?\2', href)
+									else:
+										href = re.sub(r'\?.*$', '', href)
 								elif self.site_name == 'lazada':
-									href = re.sub(r'(.*)\?.*(page=\d+).*', r'\1?\2', href)
+									if re.search('page=\d+', href):
+										href = re.sub(r'(.*)\?.*(page=\d+).*', r'\1?\2', href)
+									else:
+										href = re.sub(r'\?.*$', '', href)
 								else:
 									href = re.sub(r'\?.*$', '', href)
 
