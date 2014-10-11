@@ -1,4 +1,4 @@
-import multiprocessing, re, time
+import multiprocessing, re, time, os
 from bs4 import BeautifulSoup
 from time import strftime
 
