@@ -14,5 +14,6 @@ pytz==2014.7
 redis==2.10.3
 requesocks==0.10.8
 requests==2.4.3
+torctl==0.2
 tornado==4.0.2
 wsgiref==0.1.2
