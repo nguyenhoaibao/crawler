@@ -88,6 +88,8 @@ class Crawl():
 				self.redis_conn.srem(self.redis_crawling_urls, temp)
 				self.redis_conn.sadd(self.redis_crawled_urls, temp)
 		except Exception, e:
+			if os.environ.get('CRAWLER_ENV', 'dev') == 'dev':
+				print str(e.args)
 			pass
 
 	def process_crawled_queue(self, url):
@@ -107,6 +109,8 @@ class Crawl():
 					elif not self.redis_conn.sismember(self.redis_crawled_urls, url):
 						self.redis_conn.sadd(self.redis_crawling_urls, url)
 		except Exception, e:
+			if os.environ.get('CRAWLER_ENV', 'dev') == 'dev':
+				print str(e.args)
 			pass
 
 	def find_all_link_from_url_with_tor(self, url):
@@ -159,6 +163,8 @@ class Crawl():
 
 				i += 1
 		except Exception, e:
+			if os.environ.get('CRAWLER_ENV', 'dev') == 'dev':
+				print str(e.args)
 			pass
 
 	def find_all_link_from_url_without_tor(self, url):
@@ -205,6 +211,8 @@ class Crawl():
 				
 			return list_urls
 		except Exception, e:
+			if os.environ.get('CRAWLER_ENV', 'dev') == 'dev':
+				print str(e.args)
 			pass
 
 	def find_all_link_from_url(self, url):
