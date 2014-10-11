@@ -2,8 +2,16 @@ from __future__ import absolute_import
 
 from celery import Celery
 
+#custom module
+import config
+
+#get redis master server
+cf = config.get_config('redis', 'write')
+#broker string
+broker = 'redis://%s:%s/%s' % (cf['host'], cf['port'], cf['db'])
+
 app = Celery('background',
-             broker='redis://localhost:6379/0',
+             broker=broker,
              include=['background.tasks'])
 
 # Optional configuration, see the application user guide.
