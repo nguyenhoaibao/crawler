@@ -1,24 +1,10 @@
-curl -XPUT 'http://localhost:9216/_river/nguyenkim/_meta' -d '{ 
+curl -XPUT 'http://localhost:9200/_river/tiki/_meta' -d '{ 
     "type": "mongodb", 
     "mongodb": {
       "servers":
       [
         { "host": "108.61.217.153", "port": 27017 }
       ],
-      "db": "product", 
-      "collection": "nguyenkim_product",
-      "script": "ctx.document.name_suggest = ctx.document.name;"
-    }, 
-    "index": {
-      "name": "nguyenkim", 
-      "type": "pd",
-      "throttle_size": 3600
-    }
-  }'
-
-curl -XPUT 'http://localhost:9216/_river/tiki/_meta' -d '{ 
-    "type": "mongodb", 
-    "mongodb": {
       "db": "product", 
       "collection": "tiki_product",
       "script": "ctx.document.name_suggest = ctx.document.name;"
@@ -30,44 +16,57 @@ curl -XPUT 'http://localhost:9216/_river/tiki/_meta' -d '{
     }
   }'
 
+curl -XPUT 'http://localhost:9200/_river/cdiscount/_meta' -d '{ 
+    "type": "mongodb", 
+    "mongodb": {
+      "options": {
+        "secondary_read_preference" : true
+      },
+      "db": "product", 
+      "collection": "cdiscount_product",
+      "script": "ctx.document.name_suggest = ctx.document.name;"
+    }, 
+    "index": {
+      "name": "cdiscount", 
+      "type": "pd",
+      "throttle_size": 1000
+    }
+  }'
+
   web: 128.199.164.210
 
   crawl: 23.92.53.164
 
   CREATE ANALYZER SUPPORT ASCII CHARACTER
 
-  curl -XPUT http://localhost:9216/tiki/ -d '
+  curl -XPUT http://localhost:9200/cdiscount/ -d '
   {
     "settings": {
       "analysis": {
           "filter": {
-            "nGram_filter": {
-               "type": "nGram",
-               "min_gram": 2,
-               "max_gram": 20,
-               "token_chars": [
-                  "letter",
-                  "digit",
-                  "punctuation",
-                  "symbol"
-               ]
+            "autocomplete_filter": {
+               "type": "edge_ngram",
+               "min_gram": 1,
+               "max_gram": 10
             }
-         },
-        "analyzer": {
-            "suggest_analyzer": {
-                "tokenizer": "whitespace",
-                "filter": ["lowercase", "asciifolding", "nGram_filter"]
+          },
+          "analyzer": {
+            "autocomplete_analyzer": {
+                "type" : "custom",
+                "tokenizer": "standard",
+                "filter": ["lowercase", "asciifolding", "autocomplete_filter"]
             },
             "search_analyzer": {
+                "type" : "custom",
                 "tokenizer": "standard",
-                "filter": ["standard", "lowercase", "asciifolding"]
+                "filter": ["lowercase", "asciifolding"]
             }
         }
       }
     }
   }'
 
-curl -XPUT 'http://localhost:9216/tiki/pd/_mapping' -d '
+curl -XPUT 'http://localhost:9200/cdiscount/pd/_mapping' -d '
 {
     "properties": {
         "id": {
@@ -88,17 +87,29 @@ curl -XPUT 'http://localhost:9216/tiki/pd/_mapping' -d '
         },
         "name_suggest" : {
           "type" : "string",
-          "analyzer": "suggest_analyzer"
+          "index_analyzer": "autocomplete_analyzer",
+          "search_analyzer": "search_analyzer"
         }
     }
 }'
 
-curl -X POST localhost:9200/tiki/_suggest -d '
-{
-  "pd" : {
-    "text" : "co",
-    "completion" : {
-      "field" : "name_suggest"
+curl -XGET localhost:9200/_search?pretty -d '{
+  "query": {
+    "match": {
+      "name_suggest": "phượng ho"
     }
   }
+}'
+
+curl -XGET localhost:9200/_validate/query?explain -d '
+{
+  "query": {
+    "match": {
+      "name_suggest": "con mèo da"
+    }
+  }
+}'
+
+curl -XGET localhost:9200/lazada/_analyze?analyzer=autocomplete_analyzer -d '{
+  "con mèo da"
 }'

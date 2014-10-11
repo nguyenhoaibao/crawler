@@ -1,6 +1,7 @@
 import importlib, sys, os
 
 os.chdir('/home/hoaibao/Development/python/crawler')
+os.environ["CRAWLER_ENV"] = "dev"
 
 def main():
 	argv = sys.argv[1:]
