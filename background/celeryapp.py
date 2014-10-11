@@ -1,9 +1,14 @@
 from __future__ import absolute_import
 
 from celery import Celery
+import os
 
 #custom module
 import config
+
+#change env variable
+#@TODO: find how to change efficient way
+os.environ["CRAWLER_ENV"] = "dev"
 
 #get redis master server
 cf = config.get_config('redis', 'write')
