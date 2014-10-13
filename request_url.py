@@ -38,6 +38,8 @@ def request_to_url(url):
 	except Exception as e:
 		raise Exception("Error", e.args)
 	else:
+		if resp.status_code == '404':
+			return '404'
 		return resp.text
 
 

@@ -42,6 +42,9 @@ class Lazada(Crawl):
 			html = request_url.get_html_from_url(url, USE_TOR)
 
 			if html:
+				if html == '404':
+					self.mongo_collection.update({"url" : url}, {"$set" : {"is_active" : 0}})
+
 				parsed_html = BeautifulSoup(html, 'html5lib')
 
 				product_name_obj = parsed_html.body.find('h1', {'id' : 'prod_title'})
@@ -68,7 +71,8 @@ class Lazada(Crawl):
 						'name'  : product_name,
 						'image' : product_image,
 						'price' : price,
-						'url'   : url
+						'url'   : url,
+						'is_active': 1
 					}
 				
 					#insert data to mongo

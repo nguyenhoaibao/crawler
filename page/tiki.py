@@ -42,6 +42,9 @@ class Tiki(Crawl):
 			html = request_url.get_html_from_url(url, USE_TOR)
 
 			if html:
+				if html == '404':
+					self.mongo_collection.update({"url" : url}, {"$set" : {"is_active" : 0}})
+					return
 
 				parsed_html = BeautifulSoup(html.encode('utf-8'))
 
