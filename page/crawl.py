@@ -186,9 +186,13 @@ class Crawl():
 				#get all link
 				#trick for parse lazada page
 				#TODO: test other page
-				soup = BeautifulSoup(html)
 				if self.init_url == 'http://www.lazada.vn':
 					soup = BeautifulSoup(html, 'html5lib')
+				else:
+					soup = BeautifulSoup(html)
+
+				#before find link
+				soup = self.before_find_link(soup)
 				
 				urls = soup.findAll('a')
 
@@ -225,6 +229,12 @@ class Crawl():
 		if self.use_tor:
 			return self.find_all_link_from_url_with_tor(url)
 		return self.find_all_link_from_url_without_tor(url)
+
+	def before_find_link(self, soup):
+		if self.site_name == 'lazada':
+			for ul in soup.findAll('ul', { "class" : "fct-list" }):
+				ul.extract()
+		return soup
 
 	def update(self):
 		urls = self.redis_conn.smembers(self.redis_product_urls)
