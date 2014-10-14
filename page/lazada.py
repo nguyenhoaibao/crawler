@@ -6,7 +6,7 @@ from crawl import Crawl
 
 SITE_NAME = 'lazada'
 INIT_URL = 'http://www.lazada.vn'
-SKIP_URL = '\#|\\|urlall|mobile|shipping|\.php|contact|faq|chinh\-sach\-doi\-tra\-hang|about|huong\-dan|marketplace|privacy|terms\-of\-use|career|kiem\-tra\-don\-hang|link\-cac\-san\-pham'
+SKIP_URL = 'urlall|mobile|shipping|\.php|contact|faq|chinh\-sach\-doi\-tra\-hang|about|huong\-dan|marketplace|privacy|terms\-of\-use|career|kiem\-tra\-don\-hang|link\-cac\-san\-pham|customer'
 
 REDIS_CRAWLING_URLS = 'lazada_urls'
 REDIS_CRAWLED_URLS = 'lazada_crawled_urls'
@@ -44,6 +44,7 @@ class Lazada(Crawl):
 			if html:
 				if html == '404':
 					self.mongo_collection.update({"url" : url}, {"$set" : {"is_active" : 0}})
+					return
 
 				parsed_html = BeautifulSoup(html, 'html5lib')
 

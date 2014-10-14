@@ -67,13 +67,13 @@ class Crawl():
 			#print "%s is crawling %s" % (multiprocessing.current_process().name, url)
 			temp = url
 			urls = self.find_all_link_from_url(url)
-			if urls:
-				for url in urls:
-					if self.redis_conn.sismember(self.redis_crawled_urls, url) or self.redis_conn.sismember(self.redis_product_urls, url):
-						continue
+			#if urls:
+				#for url in urls:
+					#if self.redis_conn.sismember(self.redis_crawled_urls, url) or self.redis_conn.sismember(self.redis_product_urls, url):
+						#continue
 
 					#put to crawling queue
-					self.redis_conn.sadd(self.redis_crawling_urls, url)
+					#self.redis_conn.sadd(self.redis_crawling_urls, url)
 	                
 			if re.search(self.product_pattern, temp):  #product url
 				#remove everything after ? symbol
@@ -106,7 +106,7 @@ class Crawl():
 						self.redis_conn.sadd(self.redis_product_urls, url)
 						#push to background job to parse
 						tasks.parse_product_html.delay(self.site_name, url)
-					elif not self.redis_conn.sismember(self.redis_crawled_urls, url):
+					else:
 						self.redis_conn.sadd(self.redis_crawling_urls, url)
 		except Exception, e:
 			if os.environ.get('CRAWLER_ENV', 'dev') == 'dev':
@@ -116,7 +116,7 @@ class Crawl():
 	def find_all_link_from_url_with_tor(self, url):
 		try:
 			urls = ''
-			list_urls = []
+			list_urls = set()
 			i = 0
 
 			while i < 3:
@@ -160,7 +160,10 @@ class Crawl():
 								else:
 									href = re.sub(r'\?.*$', '', href)
 
-								list_urls.append(href)
+								if not self.redis_conn.sismember(self.redis_crawled_urls, href) and not self.redis_conn.sismember(self.redis_product_urls, href):
+									self.redis_conn.sadd(self.redis_crawling_urls, href)
+
+									list_urls.add(href)
 
 						return list_urls
 					
@@ -176,7 +179,7 @@ class Crawl():
 	def find_all_link_from_url_without_tor(self, url):
 		try:
 			urls = ''
-			list_urls = []
+			list_urls = set()
 			i = 0
 
 			#download html
@@ -198,6 +201,7 @@ class Crawl():
 
 				if urls:
 					for url in urls:
+
 						href = url.get('href')
 
 						if href and href != '/' and href not in list_urls and href != self.init_url:
@@ -211,13 +215,22 @@ class Crawl():
 								continue
 
 							if self.site_name == 'tiki':
-								href = re.sub(r'(.*)\?.*(p=\d+).*', r'\1?\2', href)
+								if re.search('p=\d+', href):
+									href = re.sub(r'(.*)\?.*(p=\d+).*', r'\1?\2', href)
+								else:
+									href = re.sub(r'\?.*$', '', href)
 							elif self.site_name == 'lazada':
-								href = re.sub(r'(.*)\?.*(page=\d+).*', r'\1?\2', href)
+								if re.search('page=\d+', href):
+									href = re.sub(r'(.*)\?.*(page=\d+).*', r'\1?\2', href)
+								else:
+									href = re.sub(r'\?.*$', '', href)
 							else:
 								href = re.sub(r'\?.*$', '', href)
 
-							list_urls.append(href)
+							if not self.redis_conn.sismember(self.redis_crawled_urls, href) and not self.redis_conn.sismember(self.redis_product_urls, href):
+								self.redis_conn.sadd(self.redis_crawling_urls, href)
+
+								list_urls.add(href)
 				
 			return list_urls
 		except Exception, e:
