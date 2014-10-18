@@ -83,7 +83,7 @@ class Tiki(Crawl):
 						'product_id' : int(product_id),
 						'name'  : product_name,
 						'image' : product_image,
-						'price' : price,
+						'price' : int(price),
 						'url'   : url
 					}
 				

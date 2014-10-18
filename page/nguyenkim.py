@@ -68,7 +68,7 @@ class Nguyenkim(Crawl):
 						'product_id' : product_id,
 						'name'  : product_name,
 						'image' : product_image,
-						'price' : price,
+						'price' : (int)price,
 						'url'   : url
 					}
 				
