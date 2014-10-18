@@ -6,7 +6,7 @@ from crawl import Crawl
 
 SITE_NAME = 'tiki'
 INIT_URL = 'http://tiki.vn'
-SKIP_URL = 'customer|order\-history|about|tuyen\-dung|faq|tin\-tham\-khao|checkout|market\-place|sgdtmdt|thuong\-hieu'
+SKIP_URL = 'customer|order\-history|about|tuyen\-dung|faq|tin\-tham\-khao|checkout|market\-place|sgdtmdt|thuong\-hieu|nhan\-xet'
 
 REDIS_CRAWLING_URLS = 'tiki_urls'
 REDIS_CRAWLED_URLS = 'tiki_crawled_urls'
@@ -35,6 +35,15 @@ class Tiki(Crawl):
 		Crawl.__init__(self, **init_params)
 		#select collection
 		self.mongo_collection = self.mongo_conn['tiki_product']
+
+		self.page_link_format = re.compile(r'(.*)\?.*(p=\d+).*', re.MULTILINE|re.DOTALL)
+
+	def format_href(self, href):
+		if re.search(self.page_link_format, href):
+			href = re.sub(self.page_link_format, r'\1?\2', href)
+		else:
+			href = re.sub(self.re_rm_url, '', href)
+		return href
 
 	def parse_product_data(self, url):
 		try:

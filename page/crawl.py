@@ -25,6 +25,8 @@ class Crawl():
 		self.process_num = params['process_num']
 		self.use_tor  = params['use_tor']
 
+		self.re_rm_url = re.compile(r"\?.*$", re.MULTILINE|re.DOTALL)
+
 	def crawl(self):
 		#get crawling urls
 		crawling_urls = self.redis_conn.smembers(self.redis_crawling_urls)
@@ -147,18 +149,7 @@ class Crawl():
 								if re.search(self.skip_url, href):
 									continue
 								
-								if self.site_name == 'tiki':
-									if re.search('p=\d+', href):
-										href = re.sub(r'(.*)\?.*(p=\d+)?.*', r'\1?\2', href)
-									else:
-										href = re.sub(r'\?.*$', '', href)
-								elif self.site_name == 'lazada':
-									if re.search('page=\d+', href):
-										href = re.sub(r'(.*)\?.*(page=\d+).*', r'\1?\2', href)
-									else:
-										href = re.sub(r'\?.*$', '', href)
-								else:
-									href = re.sub(r'\?.*$', '', href)
+								href = self.format_href(href)
 
 								if not self.redis_conn.sismember(self.redis_crawled_urls, href) and not self.redis_conn.sismember(self.redis_product_urls, href):
 									self.redis_conn.sadd(self.redis_crawling_urls, href)
@@ -214,18 +205,8 @@ class Crawl():
 							if re.search(self.skip_url, href):
 								continue
 
-							if self.site_name == 'tiki':
-								if re.search('p=\d+', href):
-									href = re.sub(r'(.*)\?.*(p=\d+).*', r'\1?\2', href)
-								else:
-									href = re.sub(r'\?.*$', '', href)
-							elif self.site_name == 'lazada':
-								if re.search('page=\d+', href):
-									href = re.sub(r'(.*)\?.*(page=\d+).*', r'\1?\2', href)
-								else:
-									href = re.sub(r'\?.*$', '', href)
-							else:
-								href = re.sub(r'\?.*$', '', href)
+							#format url again before save to redis
+							href = self.format_href(href)
 
 							if not self.redis_conn.sismember(self.redis_crawled_urls, href) and not self.redis_conn.sismember(self.redis_product_urls, href):
 								self.redis_conn.sadd(self.redis_crawling_urls, href)
@@ -244,10 +225,11 @@ class Crawl():
 		return self.find_all_link_from_url_without_tor(url)
 
 	def before_find_link(self, soup):
-		if self.site_name == 'lazada':
-			for ul in soup.findAll('ul', { "class" : "fct-list" }):
-				ul.extract()
 		return soup
+
+	def format_href(self, href):
+		href = re.sub(self.re_rm_url, '', href)
+		return href
 
 	def update(self):
 		urls = self.redis_conn.smembers(self.redis_product_urls)
@@ -255,5 +237,5 @@ class Crawl():
 			for url in urls:
 				tasks.parse_product_html.delay(self.site_name, url)
 			with open('cron.txt', 'a') as file_:
-				file_.write("%s Update all product of site %s" % (str(strftime("%Y-%m-%d %H:%M:%S")), self.site_name))
+				file_.write("%s Update all product of site %s \n" % (str(strftime("%Y-%m-%d %H:%M:%S")), self.site_name))
 			pass

@@ -34,7 +34,23 @@ class Lazada(Crawl):
 		}
 		Crawl.__init__(self, **init_params)
 		#select collection
-		self.mongo_collection = self.mongo_conn['lazada_product']		
+		self.mongo_collection = self.mongo_conn['lazada_product']
+
+		self.page_link_format = re.compile(r"(.*)\?.*(page=\d+).*", re.MULTILINE|re.DOTALL)
+
+	def before_find_link(self, soup):
+		for ul in soup.findAll('ul', { "class" : "fct-list" }):
+			ul.extract()
+		for div in soup.findAll('div', { "class" : "component-filters" }):
+			div.extract()
+		return soup
+
+	def format_href(self, href):
+		if re.search(self.page_link_format, href):
+			href = re.sub(self.page_link_format, r'\1?\2', href)
+		else:
+			href = re.sub(self.re_rm_url, '', href)
+		return href
 
 	def parse_product_data(self, url):
 		try:
