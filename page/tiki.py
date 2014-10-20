@@ -6,7 +6,7 @@ from crawl import Crawl
 
 SITE_NAME = 'tiki'
 INIT_URL = 'http://tiki.vn'
-SKIP_URL = 'customer|order\-history|about|tuyen\-dung|faq|tin\-tham\-khao|checkout|market\-place|sgdtmdt|thuong\-hieu|nhan\-xet'
+SKIP_URL = 'customer|order\-history|about|tuyen\-dung|faq|tin\-tham\-khao|checkout|market\-place|sgdtmdt|thuong\-hieu|nhan\-xet|tu\-van|productalert'
 
 REDIS_CRAWLING_URLS = 'tiki_urls'
 REDIS_CRAWLED_URLS = 'tiki_crawled_urls'
