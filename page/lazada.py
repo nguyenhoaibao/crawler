@@ -87,7 +87,7 @@ class Lazada(Crawl):
 						'product_id' : int(product_id),
 						'name'  : product_name,
 						'image' : product_image,
-						'price' : (int)price,
+						'price' : int(price),
 						'url'   : url,
 						'is_active': 1
 					}

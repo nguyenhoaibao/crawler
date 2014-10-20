@@ -84,7 +84,8 @@ class Tiki(Crawl):
 						'name'  : product_name,
 						'image' : product_image,
 						'price' : int(price),
-						'url'   : url
+						'url'   : url,
+						'is_active': 1
 					}
 				
 					#insert data to mongo
