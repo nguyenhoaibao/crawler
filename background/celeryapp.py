@@ -11,7 +11,7 @@ import config
 os.environ["CRAWLER_ENV"] = "dev"
 
 #get redis master server
-cf = config.get_config('redis', 'write')
+cf = config.get_config('redis', 'write', 'background')
 #broker string
 broker = 'redis://%s:%s/%s' % (cf['host'], cf['port'], cf['db'])
 

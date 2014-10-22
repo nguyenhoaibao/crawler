@@ -1,13 +1,16 @@
 import os, ConfigParser, ast
 
-#constant var
-CRAWLER_ENV = os.environ.get('CRAWLER_ENV', 'dev')
 
-def get_config(section, type):
+def get_config(section, type, *task):
+	CRAWLER_ENV = os.environ.get('CRAWLER_ENV', 'dev')
+
 	config = ConfigParser.RawConfigParser()
 	config.read("config/%s.cfg" % CRAWLER_ENV)
 
-	config = ast.literal_eval(config.get(section, CRAWLER_ENV))
+	var = 'default'
+	if task:
+		var = task[0]
+	config = ast.literal_eval(config.get(section, var))
 
 	if config:
 		return config[type]
